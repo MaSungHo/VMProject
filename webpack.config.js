@@ -3,8 +3,8 @@ var path = require("path");
 module.exports = {
 	context: path.resolve(__dirname, 'src/main/js'),
 	entry: {
-		page1: 'page1.js',
-		page2: 'page2.js'
+		page1: './page1.js',
+		page2: './page2.js'
 	},
 	devtool: 'sourcemaps',
 	cache: true,
