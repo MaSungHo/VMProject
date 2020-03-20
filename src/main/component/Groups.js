@@ -1,12 +1,14 @@
 import React from 'react';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
 
 class Groups extends React.Component {
 	render() {
 		return (
-			<div>
-				<p>그룹명: {this.props.name}</p>
-				<p>인원수: {this.props.num_people}</p>
-			</div>
+			<TableRow>
+				<TableCell>{this.props.name}</TableCell>
+				<TableCell>{this.props.num_people}</TableCell>
+			</TableRow>
 		);
 	}
 }
