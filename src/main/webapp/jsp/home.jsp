@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>타이틀</title>
+<title>VM 웹 관리</title>
 </head>
 <body>
-<h1>기본 화면</h1>
+<h1>VM 웹 관리 프로젝트</h1>
 </body>
 </html>

@@ -1,11 +1,22 @@
 import '../webapp/css/custom.css';
+import Groups from '../component/Groups';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const groups = {
+		'name': '인턴',
+		'num_people': 12
+}
+
 class Page2 extends React.Component {
 	render() {
-		return <div className="page2">두 번째 페이지</div>;
+		return (
+			<Groups
+			name={groups.name}
+			num_people={groups.num_people}
+			/>
+		);
 	}
 }
 
