@@ -37,8 +37,7 @@ class Page1 extends React.Component {
 			<div>
 				{users.map(c=>{
 					return (<div>
-								<Users key={c.ID} ID={c.ID} PW={c.PW} group={c.group} VM={c.VM} />
-							    ------------------------------------------------------------------
+		 	 				 <Users key={c.ID} ID={c.ID} PW={c.PW} group={c.group} VM={c.VM} />
 							</div>)
 				})}
 			</div>
