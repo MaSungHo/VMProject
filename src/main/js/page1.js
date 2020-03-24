@@ -3,6 +3,7 @@ import Users from '../component/Users'
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Helmet } from 'react-helmet';
 
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -41,6 +42,9 @@ class Page1 extends React.Component {
 	render() {
 		return (
 			<div>
+			  <Helmet>
+			    <title>VM Admin - Users</title>
+		      </Helmet>
 			  <Table>
 			    <TableHead>
 			      <TableRow>

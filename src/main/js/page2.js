@@ -3,6 +3,7 @@ import Groups from '../component/Groups';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Helmet } from 'react-helmet';
 
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -33,6 +34,9 @@ class Page2 extends React.Component {
 	render() {
 		return (
 			<div>
+			  <Helmet>
+			    <title>VM Admin - Groups</title>
+			  </Helmet>
 			  <Table>
 			    <TableHead>
 			      <TableRow>
