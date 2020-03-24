@@ -66,3 +66,5 @@ class Page1 extends React.Component {
 }
 
 ReactDOM.render(<Page1/>, document.getElementById('root'));
+
+export default Users;
