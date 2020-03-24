@@ -56,3 +56,5 @@ class Page2 extends React.Component {
 }
 
 ReactDOM.render(<Page2/>, document.getElementById('root'));
+
+export default Groups;

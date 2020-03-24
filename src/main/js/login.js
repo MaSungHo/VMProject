@@ -22,3 +22,5 @@ class Login extends Component {
 }
 
 ReactDOM.render(<Login/>, document.getElementById('root'));
+
+export default Login;
