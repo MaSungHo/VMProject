@@ -3,7 +3,7 @@ var path = require("path");
 module.exports = {
 	context: path.resolve(__dirname, 'src/main/js'),
 	entry: {
-		home: './home.js',
+		login: './login.js',
 		page1: './page1.js',
 		page2: './page2.js'
 	},
