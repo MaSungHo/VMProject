@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 import '../webapp/css/custom.css';
 
-class Home extends Component {
+class Login extends Component {
 	render() {
 		return (
 			<div class="login">
@@ -21,4 +21,4 @@ class Home extends Component {
 	}
 }
 
-ReactDOM.render(<Home/>, document.getElementById('root'));
+ReactDOM.render(<Login/>, document.getElementById('root'));

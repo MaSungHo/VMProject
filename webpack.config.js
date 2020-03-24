@@ -4,8 +4,9 @@ module.exports = {
 	context: path.resolve(__dirname, 'src/main/js'),
 	entry: {
 		login: './login.js',
-		page1: './page1.js',
-		page2: './page2.js'
+		menu: './menu.js',
+		users: './users.js',
+		groups: './groups.js'
 	},
 	devtool: 'sourcemaps',
 	cache: true,
@@ -22,7 +23,8 @@ module.exports = {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: [ '@babel/preset-env', '@babel/preset-react' ]
+						presets: [ '@babel/preset-env', '@babel/preset-react' ],
+						plugins: [ '@babel/plugin-proposal-class-properties' ]
 					}
 				}
 			},
