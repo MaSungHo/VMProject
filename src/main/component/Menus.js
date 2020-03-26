@@ -37,7 +37,7 @@ class Menus extends Component {
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>
 			      <MenuItem onClick={this.handleDrawerToggle}>
-			        <Link component={RouterLink} to="/">
+			        <Link component={RouterLink} to="/login">
 			          메뉴
 			        </Link>
 			      </MenuItem>
