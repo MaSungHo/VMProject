@@ -3,16 +3,13 @@ var path = require("path");
 module.exports = {
 	context: path.resolve(__dirname, 'src/main/js'),
 	entry: {
-		login: './login.js',
-		menu: './menu.js',
-		users: './users.js',
-		groups: './groups.js'
+		App: './App.js',
 	},
 	devtool: 'sourcemaps',
 	cache: true,
 	output: {
 		path: __dirname,
-		filename: './src/main/webapp/bundle/[name].bundle.js'
+		filename: './src/main/webapp/bundle/bundle.js'
 	},
 	mode: 'none',
 	module: {
