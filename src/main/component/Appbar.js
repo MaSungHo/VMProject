@@ -17,7 +17,7 @@ const styles = {
 	},
 };
 
-class Menus extends Component {
+class Appbar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -37,10 +37,10 @@ class Menus extends Component {
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>
 			      <MenuItem onClick={this.handleDrawerToggle}>
-			        <Link component={RouterLink} to="/login">
-			          메뉴
-			        </Link>
-			      </MenuItem>
+		            <Link component={RouterLink} to="/">
+		              로그인
+		            </Link>
+		          </MenuItem>
 			      <MenuItem onClick={this.handleDrawerToggle}>
 			        <Link component={RouterLink} to="/users">
 			          사용자 관리
@@ -61,4 +61,4 @@ class Menus extends Component {
 	}
 }
 
-export default withStyles(styles)(Menus);
+export default withStyles(styles)(Appbar);
