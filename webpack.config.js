@@ -1,11 +1,24 @@
 var path = require("path");
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-	context: path.resolve(__dirname, 'src/main/js'),
-	entry: {
-		App: './App.js',
+	devServer: {
+		compress: true,
+		hot: true,
+		inline: true,
+		port: 9000,
+		open: true
 	},
-	devtool: 'sourcemaps',
+	plugins: [
+	    new HtmlWebpackPlugin({
+	      template: './webapp/html/index.html',
+	    }),
+	 ],
+	context: path.resolve(__dirname, 'src/main'),
+	entry: {
+		App: './js/App.js',
+	},
+	devtool: 'inline-source-map',
 	cache: true,
 	output: {
 		path: __dirname,

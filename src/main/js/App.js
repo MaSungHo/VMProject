@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Appbar from '../component/Appbar';
 import UserList from './UserList';
 import GroupList from './GroupList';
