@@ -1,28 +1,70 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Appbar from './component/Appbar';
+import Home from './page/Home';
+
+import AuthRoute from './component/AuthRoute';
+import Login from './page/Login';
+import Auth from './component/Auth';
+import LogoutButton from './component/LogoutButton';
+
+import Profile from './page/Profile';
 import UserList from './page/UserList';
 import GroupList from './page/GroupList';
-import Login from './page/Login';
 import NotFound from './page/NotFound';
 
-class App extends Component {
-	render() {
+
+const App = () => {
+	
+        const [user, setUser] = useState(null)
+        const authenticated = user != null
+        
+        const login = ({ email, password }) => setUser( Auth({ email, password }) )
+        const logout = () => { setUser(null) } 
+        
 		return (
 			<div>
 			  <Helmet>
 			    <title>VM Admin Project</title>
 		      </Helmet>
 			  <Router>
-			   <Appbar>
-			     <div>
-			       <Switch>
-			         <Route exact path ="/" component={Login} />
-			         <Route exact path ="/users" component={UserList}/>
-			         <Route exact path ="/groups" component={GroupList}/>
+			    <header>
+			      {authenticated ? (
+			    	<LogoutButton logout={logout} />
+			      ) : (
+			    	<Link to="/login">
+			    	  <button>Login</button>
+			    	</Link>
+			      )}
+			    </header>
+			    <Appbar authenticated={authenticated}>
+			      <div>
+			        <Switch>
+			          <Route exact path ="/" component={Home} />
+			          <Route 
+			           path = "/login"
+			           render={props => (
+			           <Login authenticated={authenticated} login={login} {...props} />
+			           )}
+			         />
+			         <AuthRoute 
+			           authenticated={authenticated}
+			           path="/profile"
+			           render={props => <Profile user={user} {...props} />}
+			         />
+			         <AuthRoute 
+			           authenticated={authenticated}
+			           path="/users"
+			           render={props => <UserList />}
+			         />
+			         <AuthRoute 
+			           authenticated={authenticated}
+			           path="/groups"
+			           render={props => <GroupList />}
+			         />
 			         <Route component={NotFound} />
 			       </Switch>
 			     </div>
@@ -30,7 +72,6 @@ class App extends Component {
 			  </Router>
 			</div>
 		);
-	}
 }
 
 ReactDOM.render(<App/>, document.getElementById('root'));
