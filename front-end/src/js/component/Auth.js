@@ -1,6 +1,5 @@
 const users = [
-	{ name: '마성호', email: 'maam123', password: '1234' },
-	{ name: '신현철', email: 'mash809', password: '1111' },
+	{ name: '마성호', email: 'maam123', password: 'tjdgh960809!' },
 ]
 
 function Auth({ email, password }) {

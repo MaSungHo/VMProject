@@ -8,7 +8,7 @@ const NotFound = ( { history } ) => {
 	}
 	
 	const goHome = () => {
-		history.push('/profile')
+		history.push('/')
 	}
 	
 	return (

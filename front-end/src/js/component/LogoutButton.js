@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
 
 function LogoutButton({ logout, history }) {
@@ -6,7 +7,7 @@ function LogoutButton({ logout, history }) {
 		logout()
 		history.push('/')
 	}
-	return <button onClick={handleClick}>Logout</button>;
+	return <Button variant="contained" color="primary" onClick={handleClick}>Logout</Button>;
 }
 
 export default withRouter(LogoutButton);

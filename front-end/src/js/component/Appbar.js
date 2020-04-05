@@ -10,6 +10,7 @@ import Drawer from '@material-ui/core/Drawer';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import LogoutButton from './LogoutButton';
 
 const styles = {
 	root: {
@@ -24,7 +25,7 @@ class Appbar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			toggle: false
+			toggle: false,
 		};
 	}
 	handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
@@ -35,10 +36,17 @@ class Appbar extends Component {
 			  <div className={classes.root}>
 			    <AppBar position="static">
 			      <Toolbar>
-			        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-			    	 onClick={this.handleDrawerToggle}>
+			        <IconButton 
+			         edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
+			    	 onClick={this.handleDrawerToggle} disabled={!this.props.auth}>
 			           <MenuIcon />
 			        </IconButton>
+			        {this.props.auth ? (
+			           <LogoutButton logout={this.props.logout} />
+			             ) : (
+			           <RouterLink to="/login">
+			              <Button variant="contained" color="primary">Login</Button>
+			           </RouterLink> )}
 			      </Toolbar>
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>

@@ -15,7 +15,7 @@ function Login({ authenticated, login, location }) {
 		}
 	}
 	
-	const { from } = location.state || { from: { pathname: "/" } }
+	const { from } = location.state || { from: { pathname: "/profile" } }
 	if(authenticated) return <Redirect to={from} />;
 	
 	return (
@@ -26,7 +26,7 @@ function Login({ authenticated, login, location }) {
 				onChange={({ target: { value } }) => setEmail(value)}
 				type="text"
 				placeholder="email"
-			/>
+			/> <br/><br/>
 			<input
 				value={password}
 				onChange={({ target: { value } }) => setPassword(value)}

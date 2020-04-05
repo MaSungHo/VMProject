@@ -31,19 +31,11 @@ const App = () => {
 			    <title>VM Admin Project</title>
 		      </Helmet>
 			  <Router>
-			    <header>
-			      {authenticated ? (
-			    	<LogoutButton logout={logout} />
-			      ) : (
-			    	<Link to="/login">
-			    	  <button>Login</button>
-			    	</Link>
-			      )}
-			    </header>
-			    <Appbar authenticated={authenticated}>
+			    <Appbar auth={authenticated} logout={logout}>
 			      <div>
 			        <Switch>
 			          <Route exact path ="/" component={Home} />
+			          <Route path="/render" render={() => ( <h1>Hello</h1> )} />
 			          <Route 
 			           path = "/login"
 			           render={props => (
