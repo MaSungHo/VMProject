@@ -12,25 +12,25 @@ import TableCell from '@material-ui/core/TableCell';
 
 const users = [
 	{
-		'ID': 'mash809',
+		'Email': 'mash809',
 		'PW': 'pw1234',
 		'group': '인턴',
 		'VM': 'Windows 10'
 	},
 	{
-		'ID': 'tonem123',
+		'Email': 'tonem123',
 		'PW': 'msh89',
 		'group': '회사원',
 		'VM': 'Ubuntu 18.04'
 	},
 	{
-		'ID': 'mash809',
+		'Email': 'mash809',
 		'PW': '08sh09',
 		'group': '학생',
 		'VM': 'CentOS 8'
 	},
 	{
-		'ID': 'mash809',
+		'Email': 'mash809',
 		'PW': 'mam!!',
 		'group': '상업용',
 		'VM': 'Mac OS'
@@ -47,7 +47,7 @@ class UserList extends React.Component {
 			  <Table>
 			    <TableHead>
 			      <TableRow>
-			        <TableCell> <h2>아이디</h2> </TableCell>
+			        <TableCell> <h2>이메일</h2> </TableCell>
 			        <TableCell> <h2>비밀번호</h2> </TableCell>
 			        <TableCell> <h2>그룹</h2> </TableCell>
 			        <TableCell> <h2>VM</h2> </TableCell>
@@ -55,7 +55,7 @@ class UserList extends React.Component {
 			    </TableHead>
 			    <TableBody>
 			     {users.map(c=>{
-			       return <Users key={c.ID} ID={c.ID} PW={c.PW} group={c.group} VM={c.VM} />
+			       return <Users key={c.Email} Email={c.Email} PW={c.PW} group={c.group} VM={c.VM} />
 			     })}
 			    </TableBody>
 			  </Table>

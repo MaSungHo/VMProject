@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import '../css/custom.css';
 
 function Login({ authenticated, login, location }) {
 	const [ email, setEmail ] = useState('')
@@ -15,24 +16,33 @@ function Login({ authenticated, login, location }) {
 		}
 	}
 	
+	const handleKeyPress = (e) => {
+		if(e.key === "Enter") {
+			handleClick()
+		}
+	}
+	
 	const { from } = location.state || { from: { pathname: "/profile" } }
 	if(authenticated) return <Redirect to={from} />;
 	
 	return (
-		<div>
-			<h1>Login</h1>
-			<input
-				value={email}
-				onChange={({ target: { value } }) => setEmail(value)}
-				type="text"
-				placeholder="email"
-			/> <br/><br/>
-			<input
-				value={password}
-				onChange={({ target: { value } }) => setPassword(value)}
-				type="password"
-				placeholder="password"
-			/>
+		<div className="center">
+			<h1>로그인</h1>
+			이메일: &nbsp;&nbsp;&nbsp;
+			       <input
+				    value={email}
+			        onKeyPress={handleKeyPress}
+				    onChange={({ target: { value } }) => setEmail(value)}
+				    type="text"
+				    placeholder="email"
+			        /> <br/><br/>
+			비밀번호: <input
+				    value={password}
+			        onKeyPress={handleKeyPress}
+				    onChange={({ target: { value } }) => setPassword(value)}
+				    type="password"
+				    placeholder="password"
+			        /> <br/> <br/>
 			<button onClick={handleClick}>Login</button>
 		</div>
 	)
