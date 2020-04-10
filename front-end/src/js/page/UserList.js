@@ -48,14 +48,13 @@ class UserList extends React.Component {
 			    <TableHead>
 			      <TableRow>
 			        <TableCell> <h2>이메일</h2> </TableCell>
-			        <TableCell> <h2>비밀번호</h2> </TableCell>
 			        <TableCell> <h2>그룹</h2> </TableCell>
 			        <TableCell> <h2>VM</h2> </TableCell>
 			      </TableRow>
 			    </TableHead>
 			    <TableBody>
 			     {users.map(c=>{
-			       return <Users key={c.Email} Email={c.Email} PW={c.PW} group={c.group} VM={c.VM} />
+			       return <Users key={c.Email} Email={c.Email} group={c.group} VM={c.VM} />
 			     })}
 			    </TableBody>
 			  </Table>
