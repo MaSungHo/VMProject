@@ -7,7 +7,6 @@ class Users extends React.Component {
 		return (
 			<TableRow>
 				<TableCell>{this.props.Email}</TableCell>
-				<TableCell>{this.props.PW}</TableCell>
 				<TableCell>{this.props.group}</TableCell>
 				<TableCell>{this.props.VM}</TableCell>
 			</TableRow>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
@@ -16,9 +16,8 @@ import UserList from './page/UserList';
 import GroupList from './page/GroupList';
 import NotFound from './page/NotFound';
 
-
 const App = () => {
-	
+		
         const [user, setUser] = useState(null)
         const authenticated = user != null
         
@@ -35,7 +34,6 @@ const App = () => {
 			      <div>
 			        <Switch>
 			          <Route exact path ="/" component={Home} />
-			          <Route path="/render" render={() => ( <h1>Hello</h1> )} />
 			          <Route 
 			           path = "/login"
 			           render={props => (
