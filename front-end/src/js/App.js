@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
@@ -9,7 +9,6 @@ import Home from './page/Home';
 import AuthRoute from './component/AuthRoute';
 import Login from './page/Login';
 import Auth from './component/Auth';
-import LogoutButton from './component/LogoutButton';
 
 import Profile from './page/Profile';
 import UserList from './page/UserList';

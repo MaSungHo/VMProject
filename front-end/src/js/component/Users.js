@@ -6,9 +6,10 @@ class Users extends React.Component {
 	render() {
 		return (
 			<TableRow>
-				<TableCell>{this.props.Email}</TableCell>
+				<TableCell>{this.props.id}</TableCell>
+				<TableCell>{this.props.email}</TableCell>
 				<TableCell>{this.props.group}</TableCell>
-				<TableCell>{this.props.VM}</TableCell>
+				<TableCell>{this.props.VMs}</TableCell>
 			</TableRow>
 		);
 	}
