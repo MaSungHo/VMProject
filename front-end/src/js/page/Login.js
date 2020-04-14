@@ -22,7 +22,7 @@ function Login({ authenticated, login, location }) {
 		}
 	}
 	
-	const { from } = location.state || { from: { pathname: "/profile" } }
+	const { from } = location.state || { from: { pathname: "/users" } }
 	if(authenticated) return <Redirect to={from} />;
 	
 	return (

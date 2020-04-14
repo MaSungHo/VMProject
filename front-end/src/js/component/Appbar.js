@@ -51,8 +51,8 @@ class Appbar extends Component {
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>
 			      <MenuItem onClick={this.handleDrawerToggle}>
-		            <Link component={RouterLink} to="/profile">
-		              프로필 보기
+		            <Link component={RouterLink} to="/">
+		              홈 화면
 		            </Link>
 		          </MenuItem>
 			      <MenuItem onClick={this.handleDrawerToggle}>

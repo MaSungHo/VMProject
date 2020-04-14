@@ -16,7 +16,7 @@ class UserList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			users: []
+			users: [],
 		};
 	}
 	
@@ -44,7 +44,7 @@ class UserList extends Component {
 			    </TableHead>
 			    <TableBody>
 			     {this.state.users.map(c=>{
-			       return <Users key={c.id} id={c.id} email={c.email} group={c.group} VMs={c.VMs[0] + ", " + c.VMs[1]} />
+			       return <Users key={c.id} id={c.id} email={c.email} group={c.group} VMs={c.VMs} />
 			     })}
 			    </TableBody>
 			  </Table>

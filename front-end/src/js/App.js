@@ -10,7 +10,6 @@ import AuthRoute from './component/AuthRoute';
 import Login from './page/Login';
 import Auth from './component/Auth';
 
-import Profile from './page/Profile';
 import UserList from './page/UserList';
 import GroupList from './page/GroupList';
 import NotFound from './page/NotFound';
@@ -38,11 +37,6 @@ const App = () => {
 			           render={props => (
 			           <Login authenticated={authenticated} login={login} {...props} />
 			           )}
-			         />
-			         <AuthRoute 
-			           authenticated={authenticated}
-			           path="/profile"
-			           render={props => <Profile user={user} {...props} />}
 			         />
 			         <AuthRoute 
 			           authenticated={authenticated}
