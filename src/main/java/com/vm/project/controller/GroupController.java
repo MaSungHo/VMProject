@@ -2,7 +2,6 @@ package com.vm.project.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vm.project.model.Group;
 import com.vm.project.repository.GroupRepository;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @CrossOrigin("*")
 public class GroupController {
@@ -26,6 +29,7 @@ public class GroupController {
 	@Autowired
 	GroupRepository groupRepository;
 	
+	@ApiOperation(value = "전체 그룹 조회")
 	@GetMapping("/groups")
 	public ResponseEntity<List<Group>> getAllGroups() {
 		try {
@@ -42,6 +46,10 @@ public class GroupController {
 		}
 	}
 	
+	@ApiOperation(value = "특정 그룹 조회")
+	   @ApiImplicitParams({
+	           @ApiImplicitParam(name = "name", value = "조회할 그룹 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+	   })
 	@GetMapping("/groups/{name}")
 	public ResponseEntity<Group> getGroupByName(@PathVariable("name") String name) {
 		Group _group = groupRepository.findByName(name);
@@ -53,6 +61,7 @@ public class GroupController {
 		}
 	}
 	
+	@ApiOperation(value = "새로운 그룹 생성")
 	@PostMapping("/groups")
 	public ResponseEntity<Group> createGroup(@RequestBody Group group) {
 		try {
@@ -63,6 +72,10 @@ public class GroupController {
 		}
 	}
 	
+	@ApiOperation(value = "특정 그룹 정보 수정")
+	   @ApiImplicitParams({
+	           @ApiImplicitParam(name = "name", value = "수정할 그룹 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+	   })
 	@PutMapping("/groups/{name}")
 	public ResponseEntity<Group> updateGroup(@PathVariable("name") String name, @RequestBody Group group) {
 		Group _group = groupRepository.findByName(name);
@@ -77,6 +90,10 @@ public class GroupController {
 		}
 	}
 	
+	@ApiOperation(value = "특정 그룹 삭제")
+	   @ApiImplicitParams({
+	           @ApiImplicitParam(name = "name", value = "삭제할 그룹 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+	   })
 	@DeleteMapping("/groups/{name}")
 	public ResponseEntity<HttpStatus> deleteGroup(@PathVariable("name") String name) {
 		try {
@@ -87,6 +104,7 @@ public class GroupController {
 		}
 	}
 	
+	@ApiOperation(value = "전체 그룹 삭제")
 	@DeleteMapping("/groups")
 	public ResponseEntity<HttpStatus> deleteAllGroups() {
 		try {
