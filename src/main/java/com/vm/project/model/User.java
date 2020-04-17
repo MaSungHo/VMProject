@@ -31,19 +31,18 @@ public class User {
 	private String group;
 	
 	@JsonProperty("VMs")
-	private String[] VMs = null;
+	private String[] VMs;
 	
 	public User() {
 	
 	}
 
-	public User(String id, String email, String password, String group, String[] vMs) {
-		super();
+	public User(String id, String email, String password, String group, String[] _VMs) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.group = group;
-		VMs = vMs;
+		VMs = _VMs;
 	}
 
 	public String getId() {
@@ -82,8 +81,8 @@ public class User {
 		return VMs;
 	}
 
-	public void setVMs(String[] vMs) {
-		VMs = vMs;
+	public void setVMs(String[] _VMs) {
+		VMs = _VMs;
 	}
 
 }

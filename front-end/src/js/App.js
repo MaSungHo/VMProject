@@ -1,60 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { Helmet } from 'react-helmet';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Appbar from './component/Appbar';
-import Home from './page/Home';
+import { connect } from 'react-redux';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducers from './reducers';
+import thunk from 'redux-thunk';
 
-import AuthRoute from './component/AuthRoute';
-import Login from './page/Login';
-import Auth from './component/Auth';
+import Home from './container/Home';
+import Login from './container/Login';
+import Users from './container/Users';
+import Groups from './container/Groups';
+import NotFound from './container/NotFound';
 
-import UserList from './page/UserList';
-import GroupList from './page/GroupList';
-import NotFound from './page/NotFound';
+const store = createStore(reducers, applyMiddleware(thunk));
 
-const App = () => {
-		
-        const [user, setUser] = useState(null)
-        const authenticated = user != null
-        
-        const login = ({ email, password }) => setUser( Auth({ email, password }) )
-        const logout = () => { setUser(null) } 
-        
-		return (
+ReactDOM.render(
+	<Provider store={store}>
+		<Router>
 			<div>
-			  <Helmet>
-			    <title>VM Admin Project</title>
-		      </Helmet>
-			  <Router>
-			    <Appbar auth={authenticated} logout={logout}>
-			      <div>
-			        <Switch>
-			          <Route exact path ="/" component={Home} />
-			          <Route 
-			           path = "/login"
-			           render={props => (
-			           <Login authenticated={authenticated} login={login} {...props} />
-			           )}
-			         />
-			         <AuthRoute 
-			           authenticated={authenticated}
-			           path="/users"
-			           render={props => <UserList />}
-			         />
-			         <AuthRoute 
-			           authenticated={authenticated}
-			           path="/groups"
-			           render={props => <GroupList />}
-			         />
-			         <Route component={NotFound} />
-			       </Switch>
-			     </div>
-			   </Appbar>
-			  </Router>
+				<Switch>
+					<Route exact path="/" component={Home} />
+					<Route exact path="/login" component={Login} />
+					<Route exact path="/users" component={Users} />
+					<Route exact path="/groups" component={Groups} />
+					<Route component={NotFound} />
+				</Switch>
 			</div>
-		);
-}
-
-ReactDOM.render(<App/>, document.getElementById('root'));
+		</Router>
+	</Provider>
+	,
+	document.getElementById('root')
+);
