@@ -30,7 +30,6 @@ public class Group {
 	}
 	
 	public Group(String id, String name, int num_people) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.num_people = num_people;

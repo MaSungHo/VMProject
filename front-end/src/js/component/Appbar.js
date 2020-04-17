@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Link from '@material-ui/core/Link';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,7 +11,6 @@ import Drawer from '@material-ui/core/Drawer';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import LogoutButton from './LogoutButton';
 
 const styles = {
 	root: {
@@ -38,15 +38,19 @@ class Appbar extends Component {
 			      <Toolbar>
 			        <IconButton 
 			         edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-			    	 onClick={this.handleDrawerToggle} disabled={!this.props.auth}>
+			    	 onClick={this.handleDrawerToggle}
+			         disabled={!this.props.isLoggedIn}
+			         >
 			           <MenuIcon />
 			        </IconButton>
-			        {this.props.auth ? (
-			           <LogoutButton logout={this.props.logout} />
-			             ) : (
-			           <RouterLink to="/login">
-			              <Button variant="contained" color="primary">Login</Button>
-			           </RouterLink> )}
+			        {this.props.isLoggedIn ? (
+			        		   <RouterLink to="/">
+					           	  <Button variant="contained" color="primary" onClick={this.props.onLogout}>Logout</Button>
+					           </RouterLink>
+					             ) : (
+					           <RouterLink to="/login">
+					              <Button variant="contained" color="primary">Login</Button>
+					           </RouterLink> )}
 			      </Toolbar>
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>
@@ -74,5 +78,15 @@ class Appbar extends Component {
 		);
 	}
 }
+
+Appbar.propTypes = {
+	isLoggedIn: PropTypes.bool,
+	onLogout: PropTypes.func
+};
+
+Appbar.defaultProps = {
+	isLoggedIn: false,
+	onLogout: () => { console.error("logout function not defined"); }
+};
 
 export default withStyles(styles)(Appbar);
