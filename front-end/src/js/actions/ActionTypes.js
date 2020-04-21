@@ -1,3 +1,5 @@
+//액션 타입을 정의하는 파일
+
 // Login Action Types
 export const AUTH_LOGIN = "AUTH_LOGIN";
 export const AUTH_LOGIN_SUCCESS = "AUTH_LOGIN_SUCCESS";

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { connect } from 'react-redux';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducers from './reducers';
 import thunk from 'redux-thunk';
 
+import Index from './container/Index';
 import Home from './container/Home';
 import Login from './container/Login';
 import Users from './container/Users';
@@ -16,20 +16,28 @@ import NotFound from './container/NotFound';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
+class App extends Component {
+	render() {
+		return(
+			<Provider store={store}>
+				<Router>
+					<div>
+						<Route path="/" component={Index} />
+						<Switch>
+							<Route exact path="/" component={Home} />
+							<Route exact path="/login" component={Login} />
+							<Route exact path="/users" component={Users} />
+							<Route exact path="/groups" component={Groups} />
+						</Switch>
+					</div>
+				</Router>
+			</Provider>
+		)
+	}
+}
+
 ReactDOM.render(
-	<Provider store={store}>
-		<Router>
-			<div>
-				<Switch>
-					<Route exact path="/" component={Home} />
-					<Route exact path="/login" component={Login} />
-					<Route exact path="/users" component={Users} />
-					<Route exact path="/groups" component={Groups} />
-					<Route component={NotFound} />
-				</Switch>
-			</div>
-		</Router>
-	</Provider>
+	<App />
 	,
 	document.getElementById('root')
 );

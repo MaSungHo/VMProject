@@ -43,6 +43,7 @@ class Users extends Component {
 	render() {
 		return (
 			<div>
+			  {console.log(this.props.status.isLoggedIn)}
 			  <Helmet>
 			    <title>VM Admin - Users</title>
 		      </Helmet>
@@ -67,7 +68,7 @@ class Users extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		status: state.Authentication.login.status
+		status: state.Authentication.status
 	};
 };
 
