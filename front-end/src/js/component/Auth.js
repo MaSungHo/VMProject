@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+/*컨테이너 컴포넌트 Login에서 렌더링될 컴포넌트. */
+
 class Auth extends Component {
 	state = {
 		email: "",
@@ -20,6 +22,7 @@ class Auth extends Component {
 		let email = this.state.email;
 		let password = this.state.password;
 		
+		//props로 전달받은 onLogin 메소드를 사용함.
 		this.props.onLogin(email, password).then(
 			(success) => {
 				if(!success) {
@@ -43,7 +46,8 @@ class Auth extends Component {
 		const inputBoxes = (
 			<div>
 				<div>
-					<label>Email</label>
+					<label>Email:</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input
 					name="email"
 					type="text"
@@ -52,8 +56,10 @@ class Auth extends Component {
 					onKeyPress={this.handleKeyPress}
 					value={this.state.email} />
 				</div>
+				<br/>
 				<div>
-					<label>Password</label>
+					<label>Password:</label>
+					&nbsp;
 					<input
 					name="password"
 					type="password"
@@ -65,18 +71,18 @@ class Auth extends Component {
 			</div>
 		);
 		
-		const loginView = (
-			<div>
-				{inputBoxes}
-				<button onClick={this.handleLogin}>SUBMIT</button>
-			</div>
-		);
-		
 		return (
 			<div>
-				<Link to="/">VM Project</Link>
-				<div>"LOGIN"</div>
-				{loginView}
+				<h1>로그인</h1>
+				<div>
+					{inputBoxes}
+					<br/>
+					<button onClick={this.handleLogin}>SUBMIT</button>
+					&nbsp;&nbsp;
+					<Link to="/">
+						<button>홈으로</button>
+					</Link>
+				</div>
 			</div>
 		)
 	}

@@ -1,10 +1,9 @@
 import * as types from '../actions/ActionTypes';
 
+/*리듀서를 담당하는 파일로 리듀서는 dispatch 함수로부터 전달받은 액션객체의 타입에 따라 state를 변경함.*/
+
 const initialState = {
 	login: {
-		status: 'INIT'
-	},
-	register: {
 		status: 'INIT'
 	},
 	status: {
@@ -14,6 +13,7 @@ const initialState = {
 	}
 };
 
+/*전달받은 액션객체의 타입에 따라 state를 바꾸고 있음.*/
 export default function Authentication(state = initialState, action) {
 	switch(action.type) {
 		case types.AUTH_LOGIN:
@@ -23,6 +23,13 @@ export default function Authentication(state = initialState, action) {
 				status: 'WAITING'
 			}
 		}
+		case types.AUTH_LOGIN:
+	        return {
+	          ...state,
+	          login : {
+	            status: 'WAITING'
+	        }
+	    }
 		case types.AUTH_LOGIN_SUCCESS:
 			return {
 			...state,
@@ -31,7 +38,7 @@ export default function Authentication(state = initialState, action) {
 			},
 			status: {
 				...state.status,
-				isLoggIn: true,
+				isLoggedIn: true,
 				currentAdmin: action.email
 			}
 		}
