@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LoginForm from '../component/Auth';
+import LoginForm from '../component/LoginForm';
 import { connect } from 'react-redux'; // Login 컨테이너와 리덕스를 연결해줌.
 import { loginRequest } from '../actions/Authentication'; 
 import '../css/custom.css';

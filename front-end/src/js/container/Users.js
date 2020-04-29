@@ -42,7 +42,6 @@ class Users extends Component {
 	render() {
 		return (
 			<div>
-			  {console.log('render in Users')}
 			  <Helmet>
 			    <title>VM Admin - Users</title>
 		      </Helmet>

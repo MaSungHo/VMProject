@@ -47,7 +47,7 @@ public class LogInfoController {
 	   @ApiImplicitParams({
 	           @ApiImplicitParam(name = "email", value = "삭제할 로그인 정보의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 	   })
-	@DeleteMapping("/logInfo/{email}")
+	@DeleteMapping("/logInfo/{email:.+}")
 	public ResponseEntity<HttpStatus> deleteLogInfo(@PathVariable("email") String email) {
 		return logInfoService.deleteLogInfo(email);
 	}

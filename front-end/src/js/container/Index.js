@@ -7,7 +7,6 @@ import '../css/custom.css';
 class Index extends Component {
 	
 	componentDidMount() {
-		console.log('componentDidMount in Index')
 		//get cookie by name
 		function getCookie(name) {
 			var value = "; " + document.cookie;
@@ -60,10 +59,9 @@ class Index extends Component {
 		return (
 			<div>
 				<Appbar isLoggedIn={this.props.status.isLoggedIn} onLogout={this.handleLogout}>
-					<div className="center">
-					</div>
+					<>
+					</>
 				</Appbar>
-				{console.log('render in Index')}
 			</div>
 		)
 	}
