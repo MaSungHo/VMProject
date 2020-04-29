@@ -44,7 +44,7 @@ public class UserService {
 	
 	public ResponseEntity<User> createUser(User user) {
 		try {
-			User _user = userRepository.save(new User(user.getId(), user.getEmail(), user.getGroup(), user.getPassword(), user.getVMs()));
+			User _user = userRepository.save(new User(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getGroup(), user.getVMs()));
 			return new ResponseEntity<>(_user, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
@@ -55,6 +55,7 @@ public class UserService {
 		User _user = userRepository.findByEmail(email);
 		
 		if(_user != null) {
+			_user.setName(user.getName());
 			_user.setEmail(user.getEmail());
 			_user.setGroup(user.getGroup());
 			_user.setVMs(user.getVMs());

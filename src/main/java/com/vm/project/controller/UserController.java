@@ -44,7 +44,7 @@ public class UserController {
 	    @ApiImplicitParams({
 	            @ApiImplicitParam(name = "email", value = "조회할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 	    })
-	@GetMapping("/users/{email}")
+	@GetMapping("/users/{email:.+}")
 	public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
 		return userService.getUserByEmail(email);
 	}
@@ -59,7 +59,7 @@ public class UserController {
 	   @ApiImplicitParams({
 	           @ApiImplicitParam(name = "email", value = "수정할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 	   })
-	@PutMapping("/users/{email}")
+	@PutMapping("/users/{email:.+}")
 	public ResponseEntity<User> updateUser(@PathVariable("email") String email, @RequestBody User user) {
 		return userService.updateUser(email, user);
 	}
@@ -68,15 +68,9 @@ public class UserController {
 	   @ApiImplicitParams({
 	           @ApiImplicitParam(name = "email", value = "삭제할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 	   })
-	@DeleteMapping("/users/{email}")
+	@DeleteMapping("/users/{email:.+}")
 	public ResponseEntity<HttpStatus> deleteUser(@PathVariable("email") String email) {
 		return userService.deleteUser(email);
-	}
-	
-	@ApiOperation(value = "전체 유저 삭제")
-	@DeleteMapping("/users")
-	public ResponseEntity<HttpStatus> deleteAllUsers() {
-		return userService.deleteAllUsers();
 	}
 	
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
 	"id",
+	"name",
 	"email",
 	"password",
 	"group",
@@ -20,6 +21,9 @@ public class User {
 	
 	@JsonProperty("id")
 	private String id;
+	
+	@JsonProperty("name")
+	private String name;
 	
 	@JsonProperty("email")
 	private String email;
@@ -37,8 +41,9 @@ public class User {
 	
 	}
 
-	public User(String id, String email, String password, String group, String[] _VMs) {
+	public User(String id, String name, String email, String password, String group, String[] _VMs) {
 		this.id = id;
+		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.group = group;
@@ -51,6 +56,14 @@ public class User {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {

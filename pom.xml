@@ -52,6 +52,31 @@
 			<version>2.9.2</version>
 		</dependency>
 
+		<!-- Libvirt -->
+		<!-- https://mvnrepository.com/artifact/org.libvirt/slibvirt -->
+		<dependency>
+			<groupId>org.libvirt</groupId>
+			<artifactId>libvirt</artifactId>
+			<version>0.5.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.sun.jna/jna -->
+		<dependency>
+			<groupId>com.sun.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>3.0.9</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -87,6 +112,13 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>libvirt-org</id>
+			<url>https://libvirt.org/maven2</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

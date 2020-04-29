@@ -16,10 +16,11 @@ export function loginRequest(email, password) {
 	return (dispatch) => {
 		/*로그인이 시작된다는 액션 객체를 리듀서로 보낸다.*/
 		dispatch(login());
-		
-		return axios.get("http://localhost:8090/admin/" + email)
+		console.log(email)
+		console.log(password)
+		return axios.post("http://localhost:8090/admin/", {email, password})
 				.then((res) => {
-					if(res.data.email === email && res.data.password === password) {
+					if(res.status === 200) {
 						/*로그인이 성공했다는 액션 객체를 리듀서로 보낸다.*/
 						dispatch(loginSuccess(email));
 						axios.post("http://localhost:8090/logInfo", {

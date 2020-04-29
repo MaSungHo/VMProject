@@ -9,14 +9,15 @@ import thunk from 'redux-thunk';
 
 import Index from './container/Index';
 import Home from './container/Home';
-import Login from './container/Login';
 import Users from './container/Users';
 import Groups from './container/Groups';
 import NotFound from './container/NotFound';
+import AuthRoute from './component/AuthRoute';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
 class App extends Component {
+	
 	render() {
 		return(
 			<Provider store={store}>
@@ -25,8 +26,7 @@ class App extends Component {
 						<Route path="/" component={Index} />
 						<Switch>
 							<Route exact path="/" component={Home} />
-							<Route exact path="/login" component={Login} />
-							<Route exact path="/users" component={Users} />
+							<Route exact path="/users" component={Users} />				            
 							<Route exact path="/groups" component={Groups} />
 						</Switch>
 					</div>

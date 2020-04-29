@@ -33,7 +33,7 @@ public class Admin {
 		
 	}
 
-	public Admin(String id, String name, String email, String password, boolean isLoggedIn) {
+	public Admin(String id, String name, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;

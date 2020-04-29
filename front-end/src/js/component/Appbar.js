@@ -48,17 +48,10 @@ class Appbar extends Component {
 					           	  <Button variant="contained" color="primary" onClick={this.props.onLogout}>Logout</Button>
 					           </RouterLink>
 					             ) : (
-					           <RouterLink to="/login">
-					              <Button variant="contained" color="primary">Login</Button>
-					           </RouterLink> )}
+					           <></> )}
 			      </Toolbar>
 			    </AppBar>
 			    <Drawer open={this.state.toggle}>
-			      <MenuItem onClick={this.handleDrawerToggle}>
-		            <Link component={RouterLink} to="/">
-		              홈 화면
-		            </Link>
-		          </MenuItem>
 			      <MenuItem onClick={this.handleDrawerToggle}>
 			        <Link component={RouterLink} to="/users">
 			          사용자 관리

@@ -10,13 +10,12 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 
-
-
 class User extends React.Component {
 	render() {
 		return (
 			<TableRow>
 				<TableCell>{this.props.email}</TableCell>
+				<TableCell>{this.props.name}</TableCell>
 				<TableCell>{this.props.group}</TableCell>
 				<TableCell>{this.props.VMs}</TableCell>
 			</TableRow>
@@ -43,7 +42,7 @@ class Users extends Component {
 	render() {
 		return (
 			<div>
-			  {console.log(this.props.status.isLoggedIn)}
+			  {console.log('render in Users')}
 			  <Helmet>
 			    <title>VM Admin - Users</title>
 		      </Helmet>
@@ -51,13 +50,14 @@ class Users extends Component {
 			    <TableHead>
 			      <TableRow>
 			        <TableCell> <h2>이메일</h2> </TableCell>
+			        <TableCell> <h2>이름</h2> </TableCell>
 			        <TableCell> <h2>그룹</h2> </TableCell>
 			        <TableCell> <h2>VM</h2> </TableCell>
 			      </TableRow>
 			    </TableHead>
 			    <TableBody>
 			     {this.state.users.map(c=>{
-			       return <User key={c.email} email={c.email} group={c.group} VMs={c.VMs} />
+			       return <User key={c.email} email={c.email} name={c.name} group={c.group} VMs={c.VMs} />
 			     })}
 			    </TableBody>
 			  </Table>
