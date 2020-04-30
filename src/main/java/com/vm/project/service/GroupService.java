@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.vm.project.repository.GroupRepository;
 import com.vm.project.repository.UserRepository;
 import com.vm.project.model.Group;
@@ -15,7 +14,7 @@ import com.vm.project.model.User;
 
 @Service
 public class GroupService {
-	
+
 	@Autowired
 	private GroupRepository groupRepository;
 	
@@ -43,19 +42,21 @@ public class GroupService {
 		Group _group = groupRepository.findByName(name);
 		
 		if(_group != null) {
+			
 			return new ResponseEntity<>(_group, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
+	//그룹에 속한 사용자들 조회
 	public ResponseEntity<List<User>>getUsersByGroupName(String name) {
 		try {
 			List<User> users = new ArrayList<User>();
 			userRepository.findByGroup(name).forEach(users::add);
 			if(users.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			} 
+			} 			
 			return new ResponseEntity<>(users, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,7 +79,6 @@ public class GroupService {
 		
 		if(_group != null) {
 			_group.setName(group.getName());
-			_group.setNum_people(group.getNum_people());
 			return new ResponseEntity<>(groupRepository.save(_group), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,13 +95,4 @@ public class GroupService {
 		}
 	}
 	
-	//그룹 전체 삭제
-	public ResponseEntity<HttpStatus> deleteAllGroups() {
-		try {
-			groupRepository.deleteAll();
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-		}
-	}
 }

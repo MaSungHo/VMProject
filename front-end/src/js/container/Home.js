@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
 import LoginForm from '../component/LoginForm';
 import { connect } from 'react-redux'; // Login 컨테이너와 리덕스를 연결해줌.
 import { loginRequest } from '../actions/Authentication'; 
@@ -28,8 +29,13 @@ class Home extends Component {
 	
 	render() {
 		return (
-			<LoginForm mode={true} 
-			onLogin={this.handleLogin}/>
+	        <div>
+	        <Helmet>
+		      <title>VM Web Admin Project</title>
+		    </Helmet>
+			  <LoginForm mode={true} 
+			  onLogin={this.handleLogin}/>
+			</div>
 		);
 	}
 }

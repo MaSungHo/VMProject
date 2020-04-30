@@ -49,6 +49,15 @@ public class UserController {
 		return userService.getUserByEmail(email);
 	}
 	
+    @ApiOperation(value = "그룹 이름으로 사용자 조회")
+    	@ApiImplicitParams({
+            	@ApiImplicitParam(name = "group", value = "사용자의 그룹", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+    	})
+    @GetMapping("/users/{group}")
+    public ResponseEntity<List<User>> getUserByGroup(@PathVariable("group") String group) {
+    	return userService.getUserByGroup(group);
+    }
+    
 	@ApiOperation(value = "새로운 유저 생성")
 	@PostMapping("/users")
 	public ResponseEntity<User> createUser(@RequestBody User user) {

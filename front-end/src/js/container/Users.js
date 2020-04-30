@@ -1,74 +1,103 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { connect } from 'react-redux';
-
+import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
 
-class User extends React.Component {
-	render() {
-		return (
-			<TableRow>
-				<TableCell>{this.props.email}</TableCell>
-				<TableCell>{this.props.name}</TableCell>
-				<TableCell>{this.props.group}</TableCell>
-				<TableCell>{this.props.VMs}</TableCell>
-			</TableRow>
-		);
-	}
-}
+const columns = [
+  { id: 'email', label: 'Email', minWidth: 170 },
+  { id: 'name', label: 'Name', minWidth: 100 },
+  { id: 'group', label: 'Group', minWidth: 100 },
+  { id: 'info', label: 'Info', minWidth: 150}
+];
 
-class Users extends Component {
-	
-	constructor(props) {
-		super(props);
-		this.state = {
-			users: [],
-		};
-	}
-	
-	componentDidMount() {
-		axios.get('http://localhost:8090/users')
-			.then(res => {
-				this.setState({ users: res.data });
-			});
-	}
-	
-	render() {
-		return (
-			<div>
-			  <Helmet>
-			    <title>VM Admin - Users</title>
-		      </Helmet>
-			  <Table>
-			    <TableHead>
-			      <TableRow>
-			        <TableCell> <h2>이메일</h2> </TableCell>
-			        <TableCell> <h2>이름</h2> </TableCell>
-			        <TableCell> <h2>그룹</h2> </TableCell>
-			        <TableCell> <h2>VM</h2> </TableCell>
-			      </TableRow>
-			    </TableHead>
-			    <TableBody>
-			     {this.state.users.map(c=>{
-			       return <User key={c.email} email={c.email} name={c.name} group={c.group} VMs={c.VMs} />
-			     })}
-			    </TableBody>
-			  </Table>
-			</div>
-		);
-	}
-}
+const useStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
+  container: {
+    maxHeight: 440,
+  },
+});
 
-const mapStateToProps = (state) => {
-	return {
-		status: state.Authentication.status
-	};
-};
+export default function Users() {
+  const classes = useStyles();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [users, setUsers] = useState([]);
 
-export default connect(mapStateToProps)(Users);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  
+  useEffect(() => {
+	  axios.get('http://localhost:8090/users')
+		.then(res => {
+			setUsers(res.data);
+		});
+  });
+  
+  return (
+	<div>
+	<Helmet>
+      <title>VM Admin - Users</title>
+    </Helmet>
+    <Paper className={classes.root}>
+      <TableContainer className={classes.container}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((user) => {
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} key={user.id}>
+                  {columns.map((column) => {
+                    const value = user[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    </Paper>
+    </div>
+  ); 
+} 
