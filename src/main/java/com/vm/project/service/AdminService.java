@@ -38,7 +38,6 @@ public class AdminService {
 		User user = userRepository.findByEmail(email);
 		
 		if(user != null) {
-			System.out.println("safdasfdasfd");
 			Admin admin = new Admin(user.getId(), user.getName(), user.getEmail(), user.getPassword());
 			adminRepository.save(admin);
 			return new ResponseEntity<>(admin, HttpStatus.CREATED);

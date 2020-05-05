@@ -229,6 +229,7 @@ export default function Appbar({isLoggedIn, onLogout}) {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
+            disabled={!isLoggedIn}
             className={clsx(classes.menuButton, open && classes.hide)}
           >
             <MenuIcon />

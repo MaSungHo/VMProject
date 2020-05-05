@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -32,12 +35,23 @@ const styles = theme => ({
   root: {
     height: '100vh',
   },
+  modal: {
+    display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+  },
+  modal_paper: {
+    backgroundColor: theme.palette.background.paper,
+    backgroundSize: 'cover',
+	border: '2px solid #000',
+	boxShadow: theme.shadows[5],
+	padding: theme.spacing(2, 4, 3),
+  },
   image: {
-    backgroundImage: 'url(https://whomentor.com/wp-content/uploads/cache/images/remote/i2-wp-com/Ajou-University-2685014912.png)',
+	backgroundImage : 'url(/Ajou-logo.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
     backgroundPosition: 'center',
   },
   paper: {
@@ -63,8 +77,21 @@ class LoginForm extends Component {
   	
   state = {
 	email: "",
-	password: ""
+	password: "",
+	open: false
   }
+  
+  handleOpen = () => {
+	  this.setState({
+		  open: true
+	  });
+  }
+  
+  handleClose = () => {
+	    this.setState({
+	    	open: false
+	    });
+  };
   
   //input의 내용이 변경되었을 때 state를 바꿔주는 함수
   handleChange = (e) => {
@@ -84,7 +111,8 @@ class LoginForm extends Component {
 			if(!success) {
 				this.setState({
 					email:'',
-					password: ''
+					password: '',
+					open: true
 				})
 			}
 		}
@@ -102,6 +130,34 @@ class LoginForm extends Component {
     const { classes } = this.props;
     return (
       <Grid container component="main" className={this.props.root}>
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={this.state.open}
+        onClose={this.handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+        >
+         <Fade in={this.state.open}>
+           <div className={classes.modal_paper}>
+             <h2 id="transition-modal-title">로그인에 실패했습니다.</h2>
+             <p id="transition-modal-description">아이디와 비밀번호를 확인해주세요.</p>
+             <Button
+             onClick={this.handleClose}
+             fullWidth
+             variant="contained"
+             color="primary"
+             className={classes.submit}
+             >
+               Close
+             </Button>
+            </div>
+          </Fade>
+        </Modal>
         <CssBaseline />
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -123,7 +179,7 @@ class LoginForm extends Component {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             autoComplete="email"
             autoFocus
             />

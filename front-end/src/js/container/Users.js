@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,10 +13,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 const columns = [
-  { id: 'email', label: 'Email', minWidth: 170 },
-  { id: 'name', label: 'Name', minWidth: 100 },
-  { id: 'group', label: 'Group', minWidth: 100 },
-  { id: 'info', label: 'Info', minWidth: 150}
+  { id: 'id', label: 'No.', minWidth: 50, align: 'center' },
+  { id: 'email', label: 'Email', minWidth: 170, align: 'center' },
+  { id: 'name', label: 'Name', minWidth: 100, align: 'center' },
+  { id: 'group', label: 'Group', minWidth: 100, align: 'center' },
+  { id: 'info', label: 'Info', minWidth: 150, align: 'center'}
 ];
 
 const useStyles = makeStyles({
@@ -78,7 +80,11 @@ export default function Users() {
                     const value = user[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                        {column.id === 'info' ? 
+                        	( <Button variant="contained" color="primary"> 
+                        	     조회
+                        	  </Button> ) : ( 
+                        	  column.id === 'number' ? num : value )}
                       </TableCell>
                     );
                   })}
