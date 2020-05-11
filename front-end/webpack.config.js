@@ -8,11 +8,17 @@ module.exports = {
 	devtool: 'inline-source-map',
 	cache: true,
 	output: {
-		path: path.join(__dirname, '/../src/main/webapp/bundle'),
+		path: path.join(__dirname, '/'),
 		filename: 'bundle.js'
 	},
 	devServer: {
-		historyApiFallback: true,
+		historyApiFallback: {
+			rewrites: [
+				{ from: /^\/$/, to: './index.html' },
+				{ from: /^\/users\/^\/$/, to: './index.html' }
+			]
+		},
+		publicPath: '/',
 		compress: true,
 		hot: true,
 		inline: true,
@@ -21,7 +27,7 @@ module.exports = {
 	},
 	plugins: [
 	    new HtmlWebpackPlugin({
-	      template: '../src/main/webapp/html/index.html',
+	      template: './index.html',
 	    }),
 	 ],
 	module: {

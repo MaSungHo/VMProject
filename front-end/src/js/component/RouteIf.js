@@ -12,7 +12,7 @@ const RouteIf = ({ component: Component, ...rest }) => {
 	
 	useEffect(() => {
 	    getStatusRequest
-	  });
+	}, []);
 	
 	return (
 		<>

@@ -13,6 +13,7 @@ import Users from './container/Users';
 import Groups from './container/Groups';
 import NotFound from './container/NotFound';
 import RouteIf from './component/RouteIf';
+import User from './component/User';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
@@ -46,7 +47,6 @@ class App extends Component {
 	}
 	
 	render() {
-		const role = this.checkLogin();
 		return(
 			<Provider store={store}>
 				<Router>
@@ -56,8 +56,9 @@ class App extends Component {
 							<Route exact path="/" component={Home} />
 							<RouteIf
 							 exact path="/users"
-						     component={Users}/>				            
-							<RouteIf 
+						     component={Users}/>
+						    <Route path="/users/:email" component={User} />    
+							<RouteIf
 							exact path="/groups" 
 							component={Groups} />
 							<Route component={NotFound} />

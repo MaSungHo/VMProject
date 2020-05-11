@@ -16,21 +16,21 @@ class Index extends Component {
 		
 		//cookie에서 로그인 데이터를 가져옴.
 		let loginData = getCookie('key');
-		
 		//로그인 데이터가 없다면 아무것도 실행하지 않음.
 		if(typeof loginData === "undefined") return;
 		//JSON을 디코드함.
 		loginData = JSON.parse(atob(loginData));
-		
 		//if 로그인 상태가 아니라면 아무 것도 실행하지 않는다.
 		if(!loginData.isLoggedIn) return;
 		//페이지가 새로고침 되고 세션이 존재할 때
 		//cookie가 유효한지 검사한다.
-		this.props.getStatusRequest().then(
+		this.props.getStatusRequest();
+		/*this.props.getStatusRequest().then(
 			() => {
 				//세션이 유효하지 않을 경우
 				if(!this.props.status.valid) {
 					//로그아웃 한다.
+					console.log('gag')
 					loginData = {
 						isLoggedIn: false,
 						email: ''
@@ -39,7 +39,7 @@ class Index extends Component {
 					document.cookie='key=' + btoa(JSON.stringify(loginData));
 				}
 			}
-		);
+		); */
 	}
 	
 	handleLogout = () => {

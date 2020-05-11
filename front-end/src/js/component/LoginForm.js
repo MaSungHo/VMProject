@@ -181,7 +181,6 @@ class LoginForm extends Component {
             id="email"
             label="Email"
             autoComplete="email"
-            autoFocus
             />
             <TextField
             onChange={this.handleChange}
