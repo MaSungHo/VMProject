@@ -9,6 +9,7 @@ module.exports = {
 	cache: true,
 	output: {
 		path: path.join(__dirname, '/'),
+		publicPath: '/',
 		filename: 'bundle.js'
 	},
 	devServer: {
@@ -16,7 +17,8 @@ module.exports = {
 			rewrites: [
 				{ from: /^\/$/, to: './index.html' },
 				{ from: /^\/users\/^\/$/, to: './index.html' }
-			]
+			],
+			disableDotRule: true
 		},
 		publicPath: '/',
 		compress: true,

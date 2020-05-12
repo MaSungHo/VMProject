@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -26,6 +28,7 @@ const useStyles = makeStyles({
 export default function Groups() {
 	const classes = useStyles();
 	const [groups, setGroups] = useState([]);
+	
 	useEffect(() => {
 		let unmounted = false;
 	    let source = axios.CancelToken.source();
@@ -46,6 +49,9 @@ export default function Groups() {
 	}, []);
 	return (
 	  <div className="component">
+	    <Helmet>
+          <title>VM Web Admin - Groups</title>
+        </Helmet>
 	  	{groups.map((group) => (
 	  		<div key={group.id}>
 	  		<Card className={classes.root} variant="outlined">
@@ -54,7 +60,7 @@ export default function Groups() {
       				className={classes.media}
       				image="/Ajou-template.jpg"
       				title={group.name}
-      			/>
+      			    />
       				<CardContent>
       					<Typography gutterBottom variant="h5" component="h2">
       						{group.name}
@@ -67,11 +73,13 @@ export default function Groups() {
       			</CardActionArea>
       			<CardActions>
       				<Button size="small" color="primary">
-      					Share
+      					수정
       				</Button>
-      				<Button size="small" color="primary">
-      					Learn More
-      				</Button>
+      				<Link to={"/groups/" + group.name}>
+      				  <Button size="small" color="primary">
+      					자세히 보기
+      				  </Button>
+      				</Link>
       			</CardActions>
       		</Card>
       		<Grid item xs={12} sm={12} >

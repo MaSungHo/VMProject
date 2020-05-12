@@ -81,11 +81,6 @@ class LoginForm extends Component {
 	open: false
   }
   
-  handleOpen = () => {
-	  this.setState({
-		  open: true
-	  });
-  }
   
   handleClose = () => {
 	    this.setState({

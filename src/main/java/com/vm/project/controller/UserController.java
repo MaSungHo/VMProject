@@ -44,7 +44,7 @@ public class UserController {
 	    @ApiImplicitParams({
 	            @ApiImplicitParam(name = "email", value = "조회할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 	    })
-	@GetMapping("/users/{email:.+}")
+	@GetMapping("/users/{email:.+}/")
 	public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
 		return userService.getUserByEmail(email);
 	}
@@ -53,7 +53,7 @@ public class UserController {
     	@ApiImplicitParams({
             	@ApiImplicitParam(name = "group", value = "사용자의 그룹", required = true, dataType = "string", paramType = "path", defaultValue = ""),
     	})
-    @GetMapping("/users/{group}")
+    @GetMapping("/users/group/{group}")
     public ResponseEntity<List<User>> getUserByGroup(@PathVariable("group") String group) {
     	return userService.getUserByGroup(group);
     }

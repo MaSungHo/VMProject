@@ -14,6 +14,7 @@ import Groups from './container/Groups';
 import NotFound from './container/NotFound';
 import RouteIf from './component/RouteIf';
 import User from './component/User';
+import Group from './component/Group';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
@@ -57,10 +58,13 @@ class App extends Component {
 							<RouteIf
 							 exact path="/users"
 						     component={Users}/>
-						    <Route path="/users/:email" component={User} />    
+						    <RouteIf
+						     path="/users/:email" component={User} />    
 							<RouteIf
 							exact path="/groups" 
 							component={Groups} />
+							<RouteIf
+						     path="/groups/:name" component={Group} /> 
 							<Route component={NotFound} />
 						</Switch>
 					</div>

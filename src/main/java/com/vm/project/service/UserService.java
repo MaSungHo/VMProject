@@ -39,7 +39,6 @@ public class UserService {
 	
 	public ResponseEntity<User> getUserByEmail(String email) {
 		User _user = userRepository.findByEmail(email);
-		
 		if(_user != null) {
 			return new ResponseEntity<>(_user, HttpStatus.OK);
 		} else {
@@ -99,6 +98,14 @@ public class UserService {
 	
 	public ResponseEntity<HttpStatus> deleteUser(String email) {
 		try {
+			User _user = userRepository.findByEmail(email);
+			Group _group = groupRepository.findByName(_user.getGroup());
+			if(_group != null) {
+				_group.setNum_people(_group.getNum_people() - 1);
+				groupRepository.save(_group);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+			}
 			userRepository.deleteByEmail(email);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {

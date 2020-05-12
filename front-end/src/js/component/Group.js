@@ -20,9 +20,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import Typography from '@material-ui/core/Typography';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -55,7 +52,7 @@ function TablePaginationActions(props) {
   return (
     <div className={classes.root}>
       <Helmet>
-        <title>VM Web Admin - Users</title>
+        <title>VM Web Group Info</title>
       </Helmet>
       <IconButton
         onClick={handleFirstPageButtonClick}
@@ -99,34 +96,18 @@ const columns = [
   { id: 'group', label: 'Group', minWidth: 100, align: 'center' }
 ];
 
-const useStyles2 = makeStyles((theme) => ({
+const useStyles2 = makeStyles({
   table: {
     minWidth: 500,
   },
-  modal: {
-	display: 'flex',
-    alignItems: 'center',
-	justifyContent: 'center',
-  },
-  modal_paper: {
-	backgroundColor: theme.palette.background.paper,
-	backgroundSize: 'cover',
-	border: '2px solid #000',
-	boxShadow: theme.shadows[5],
-	padding: theme.spacing(2, 4, 3),
-  },
-  submit: {
-	margin: theme.spacing(3, 0, 2),
-  },
-}));
+});
 
-export default function Users() {
+export default function Group({match}) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [users, setUsers] = useState([]);
   const [length, setLength] = useState(0);
-  const [open, setOpen] = useState(false);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, length - page * rowsPerPage);
   var num = 1;
@@ -139,11 +120,11 @@ export default function Users() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
   useEffect(() => {
 	let unmounted = false;
     let source = axios.CancelToken.source();
-	axios.get('http://localhost:8090/users')
+	axios.get('http://localhost:8090/users/group/' + match.params.name)
 	  .then(res => {
 	          if (!unmounted) {
 	            setUsers(res.data);
@@ -162,6 +143,8 @@ export default function Users() {
   
   return (
     <TableContainer component={Paper}>
+      <br />
+      <Typography variant="h4">{match.params.name}의 사용자</Typography><br />
       <Table className={classes.table} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
