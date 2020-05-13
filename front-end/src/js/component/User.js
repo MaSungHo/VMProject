@@ -11,6 +11,11 @@ import Divider from '@material-ui/core/Divider';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import '../css/custom.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,6 +62,15 @@ export default function User({match, history}) {
 	const [user, setUser] = useState([]);
 	const [length, setLength] = useState([]);
 	const [open, setOpen] = useState(false);
+	const [modal, setModal] = useState(false);
+	const [view, setView] = useState(false);
+	
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [group, setGroup] = useState('');
+	const [virt, setVirt] = useState([]);
+	
 	
 	const handleOpen = () => {
 		setOpen(true);
@@ -68,11 +82,59 @@ export default function User({match, history}) {
 	
 	const handleDelete = () => {
 		setOpen(false);
-		axios.delete('http://localhost:8090/users/' + match.params.email);
+		axios.delete('http://localhost:8090/users/' + match.params.email + '/');
 		history.goBack();
 	}
 	
+	const handleModalOpen = () => {
+		setModal(true);
+	}
+	  
+	const handleModalClose = () => {
+		setModal(false);
+	}
+	
+	// 임시로 이름 붙여놓은 함수
+	const handleModal = () => {
+		handleChangeUser()
+		setModal(false);
+	}
+	
+	const handleView = () => {
+		setView(!view);
+	}
+	
 	const goBack = () => {
+		history.goBack();
+	}
+	
+	const handleChange = (e) => {
+		if(e.target.name === 'name') {
+			setName(e.target.value)
+		}
+		else if(e.target.name === 'email') {
+			setEmail(e.target.value)
+		}
+		else if(e.target.name === 'password') {
+			setPassword(e.target.value)
+		}
+		else if(e.target.name === 'group') {
+			setGroup(e.target.value)
+		}
+		else if(e.target.name === 'VMs') {
+			var Vm_array = e.target.value.split(',');
+			setVirt(Vm_array)
+		} 
+	}
+	
+	const handleChangeUser = () => {
+		axios.put('http://localhost:8090/users/' + match.params.email + '/', {
+			name: name,
+			email: email,
+			password: password,
+			group: group,
+			VMs: virt
+		})
 		history.goBack();
 	}
 	
@@ -89,6 +151,11 @@ export default function User({match, history}) {
 	    .then(res => {
 		  if (!unmounted) {
 		    setUser(res.data);
+		    setName(res.data.name);
+		    setEmail(res.data.email);
+		    setPassword(res.data.password);
+		    setGroup(res.data.group);
+		    setVirt(res.data.VMs);
 		    setLength(res.data.VMs.length);
 			if (axios.isCancel()) {
 			  console.log(`request cancelled:${e.message}`);
@@ -111,6 +178,110 @@ export default function User({match, history}) {
        aria-labelledby="transition-modal-title"
        aria-describedby="transition-modal-description"
        className={classes.modal}
+       open={modal}
+       onClose={handleClose}
+       closeAfterTransition
+       BackdropComponent={Backdrop}
+       BackdropProps={{
+       timeout: 500,
+       }}
+      >
+        <Fade in={modal}>
+          <div className={classes.modal_paper}>
+          이름: <TextField
+          		onChange={handleChange}
+                className="validate"
+                name="name"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+            	label="Name"
+            	defaultValue={user.name}
+               />
+          이메일: <TextField
+          		 onChange={handleChange}
+          		 className="validate"
+          		 name="email"
+          	     variant="outlined"
+          	     margin="normal"
+          	     required
+          	     fullWidth
+          	     id="email"
+          	     label="Email"
+          	     defaultValue={user.email}
+            	/>
+          비밀번호: <TextField
+          		  onChange={handleChange}
+         		  className="validate"
+         		  name="password"
+         	      variant="outlined"
+         	      margin="normal"
+         	      required
+         	      fullWidth
+         	      id="password"
+         	      label="Password"
+         	      type= {view ? "text" : "password"}
+         	      defaultValue={user.password}
+          	      InputProps={{
+                     endAdornment: (
+                       <InputAdornment position="end">
+                         <IconButton onClick={handleView}>
+                         	{view ? <VisibilityOff /> : <Visibility />}
+                         </IconButton>
+                       </InputAdornment>
+                   ),
+                  }}
+           	     />  
+          그룹: <TextField
+          		onChange={handleChange}
+                className="validate"
+                name="group"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="group"
+             	label="Group"
+             	defaultValue={user.group}
+               />
+          VM: <TextField
+          		onChange={handleChange}
+                className="validate"
+                name="VMs"
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="vm"
+             	label="VM"
+             	defaultValue={user.VMs}
+               />    
+            <Button
+             onClick={handleModal}
+             variant="contained"
+             color="secondary"
+             className={classes.submit}
+            >
+              수정
+            </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <Button
+             onClick={handleModalClose}
+             variant="contained"
+             color="primary"
+             className={classes.submit}
+            >
+              취소
+            </Button>
+          </div>
+        </Fade>
+      </Modal>
+      
+      <Modal
+       aria-labelledby="transition-modal-title"
+       aria-describedby="transition-modal-description"
+       className={classes.modal}
        open={open}
        onClose={handleClose}
        closeAfterTransition
@@ -119,31 +290,32 @@ export default function User({match, history}) {
        timeout: 500,
        }}
       >
-        <Fade in={open}>
-          <div className={classes.modal_paper}>
-            <h2 id="transition-modal-title">사용자를 삭제하시겠습니까?</h2>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-             onClick={handleDelete}
-             variant="contained"
-             color="secondary"
-             className={classes.submit}
-            >
-              예
-            </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button
-             onClick={handleClose}
-             variant="contained"
-             color="primary"
-             className={classes.submit}
-            >
-              아니요
-            </Button>
-          </div>
-        </Fade>
-      </Modal>
+         <Fade in={open}>
+           <div className={classes.modal_paper}>
+             <h2 id="transition-modal-title">사용자를 삭제하시겠습니까?</h2>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <Button
+              onClick={handleDelete}
+              variant="contained"
+              color="secondary"
+              className={classes.submit}
+             >
+               예
+             </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <Button
+              onClick={handleClose}
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+             >
+               아니요
+             </Button>
+           </div>
+         </Fade>
+       </Modal>
+       
       <Typography variant="h4" gutterBottom>
-        Profile - {user.name}
+      &nbsp;&nbsp;&nbsp;Profile - {user.name}
       </Typography> <br/>
       <Paper className={classes.paper}>
         <Grid container spacing={10}>
@@ -176,9 +348,15 @@ export default function User({match, history}) {
                 <Divider />
               </Grid>
               <Grid item>
-                <Button variant="contained" color="primary"> 정보 수정 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="primary" onClick={goBack}> 뒤로 가기 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="secondary" onClick={handleOpen}> 사용자 삭제 </Button>
+                <Button variant="contained" color="primary" onClick={handleModalOpen}> 
+                   정보 수정 
+                </Button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button variant="contained" color="primary" onClick={goBack}>
+                  뒤로 가기 
+                </Button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button variant="contained" color="secondary" onClick={handleOpen}> 
+                  사용자 삭제
+                </Button>
               </Grid>
             </Grid>
             <Grid item>

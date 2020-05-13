@@ -102,6 +102,9 @@ const columns = [
 const useStyles2 = makeStyles((theme) => ({
   table: {
     minWidth: 500,
+    maxWidth: 1500,
+    marginTop: 20,
+    alignItems: 'center',
   },
   modal: {
 	display: 'flex',

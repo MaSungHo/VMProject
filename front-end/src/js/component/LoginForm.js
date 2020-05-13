@@ -14,6 +14,10 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { withStyles } from '@material-ui/core/styles';
 
 class Copyright extends Component {
@@ -78,7 +82,8 @@ class LoginForm extends Component {
   state = {
 	email: "",
 	password: "",
-	open: false
+	open: false,
+	view: false
   }
   
   
@@ -119,6 +124,12 @@ class LoginForm extends Component {
 	if(e.charCode==13) {
 		this.handleLogin();
 	}
+  }
+  
+  handleView = () => {
+	  this.setState({
+		  view: !this.state.view
+	  })
   }
   
   render() {
@@ -188,9 +199,18 @@ class LoginForm extends Component {
             required
             fullWidth
             label="Password"
-            type="password"
+            type={this.state.view ? "text" : "password"}
             id="password"
             autoComplete="current-password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={this.handleView}>
+                     {this.state.view ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             />
             <Button
              onClick={this.handleLogin}
