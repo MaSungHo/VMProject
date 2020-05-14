@@ -63,6 +63,30 @@ public class GroupService {
 		}
 	}
 	
+	//현재 그룹 리스트를 가져옴
+	public ResponseEntity<List<String>> getGroupList() {
+		try {
+			List<Group> groups = new ArrayList<Group>();
+			groupRepository.findAll().forEach(groups::add);
+			
+			if(groups.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			List<String> groupList = new ArrayList<String>();
+			
+			for(Group e : groups)
+			{
+				groupList.add(e.getName());
+			}
+			
+			return new ResponseEntity<>(groupList, HttpStatus.OK);
+			
+		} catch(Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	//새로운 그룹 생성
 	public ResponseEntity<Group> createGroup(Group group) {
 		try {
