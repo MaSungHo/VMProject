@@ -48,6 +48,12 @@ public class GroupController {
 		return groupService.getGroupByName(name);
 	}
 	
+	@ApiOperation(value = "그룹 목록 조회")
+	@GetMapping("/groups/list")
+	public ResponseEntity<List<String>> getGroupList() {
+		return groupService.getGroupList();
+	}
+	
 	@ApiOperation(value = "특정 그룹에 속한 사용자 목록 조회")
 	   @ApiImplicitParams({
 	           @ApiImplicitParam(name = "name", value = "사용자 목록을 조회할 그룹 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),

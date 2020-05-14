@@ -16,6 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import '../css/custom.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
   submit: {
 	margin: theme.spacing(3, 0, 2),
   },
+  formControl: {
+    margin: theme.spacing(1),
+	minWidth: 120,
+  },
 }));
 
 export default function User({match, history}) {
@@ -70,7 +77,7 @@ export default function User({match, history}) {
 	const [password, setPassword] = useState('');
 	const [group, setGroup] = useState('');
 	const [virt, setVirt] = useState([]);
-	
+	const [groupList, setGroupList] = useState([]);
 	
 	const handleOpen = () => {
 		setOpen(true);
@@ -163,6 +170,16 @@ export default function User({match, history}) {
 			}
 		}
 	  });
+	  axios.get('http://localhost:8090/groups/list')
+	    .then(res => {
+	    	if (!unmounted) {
+			    setGroupList(res.data);
+				if (axios.isCancel()) {
+				  console.log(`request cancelled:${e.message}`);
+				} else {
+				}
+			}
+	    })
 	  return function () {
 		unmounted = true;
 		source.cancel("Cancelling in cleanup");
@@ -234,18 +251,21 @@ export default function User({match, history}) {
                    ),
                   }}
            	     />  
-          그룹: <TextField
-          		onChange={handleChange}
-                className="validate"
-                name="group"
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="group"
-             	label="Group"
-             	defaultValue={user.group}
-               />
+          그룹: <br/><FormControl className={classes.formControl}>
+        	     <Select
+          		  id="group"
+          		  name="group"
+          		  onChange={handleChange}
+                  label="Group"
+                  autoWidth
+                  defaultValue={user.group}
+                  value={group}
+                 >
+                   {groupList.map((name) => (
+                	  <MenuItem key={name} value={name}>{name}</MenuItem> 
+                   ))}
+                 </Select>
+               </FormControl><br />
           VM: <TextField
           		onChange={handleChange}
                 className="validate"
@@ -263,6 +283,7 @@ export default function User({match, history}) {
              variant="contained"
              color="secondary"
              className={classes.submit}
+             disabled={name === '' || email === '' || password === '' || group === '' || virt.length === 0}
             >
               수정
             </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

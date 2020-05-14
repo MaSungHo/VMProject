@@ -23,6 +23,13 @@ import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -106,6 +113,12 @@ const useStyles2 = makeStyles((theme) => ({
     marginTop: 20,
     alignItems: 'center',
   },
+  button: {
+	minWidth: 100,
+	marginTop: 20,
+	marginLeft: '85%',
+	align: 'right',
+  },
   modal: {
 	display: 'flex',
     alignItems: 'center',
@@ -121,6 +134,10 @@ const useStyles2 = makeStyles((theme) => ({
   submit: {
 	margin: theme.spacing(3, 0, 2),
   },
+  formControl: {
+	margin: theme.spacing(1),
+	minWidth: 120,
+  },
 }));
 
 export default function Users() {
@@ -129,7 +146,15 @@ export default function Users() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [users, setUsers] = useState([]);
   const [length, setLength] = useState(0);
+  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [group, setGroup] = useState('');
+  const [virt, setVirt] = useState([]);
+  const [groupList, setGroupList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState(false);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, length - page * rowsPerPage);
   var num = 1;
@@ -142,6 +167,53 @@ export default function Users() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  
+  const handleOpen = () => {
+	setOpen(true);
+  }
+	  
+  const handleClose = () => {
+	setOpen(false);
+	setName('');
+	setEmail('');
+	setPassword('');
+	setGroup('');
+	setVirt([]);
+  }
+  
+  const handleView = () => {
+	setView(!view);
+  }
+  
+  const handleChange = (e) => {
+	if(e.target.name === 'name') {
+		setName(e.target.value)
+	}
+	else if(e.target.name === 'email') {
+		setEmail(e.target.value)
+	}
+	else if(e.target.name === 'password') {
+		setPassword(e.target.value)
+	}
+	else if(e.target.name === 'group') {
+		setGroup(e.target.value)
+	}
+	else if(e.target.name === 'VMs') {
+		var Vm_array = e.target.value.split(',');
+		setVirt(Vm_array)
+	} 
+  }
+  
+  const handleCreate = () => {
+	  axios.post('http://localhost:8090/users', {
+		name: name,
+		email: email,
+		password: password,
+		group: group,
+		VMs: virt
+	  })
+	  setOpen(false);
+  }
   
   useEffect(() => {
 	let unmounted = false;
@@ -157,13 +229,129 @@ export default function Users() {
 	            }
 	          }
 		});
-		return function () {
-          unmounted = true;
-          source.cancel("Cancelling in cleanup");
-        };
+	axios.get('http://localhost:8090/groups/list')
+    .then(res => {
+    	if (!unmounted) {
+		    setGroupList(res.data);
+		    setGroup(res.data[0])
+			if (axios.isCancel()) {
+			  console.log(`request cancelled:${e.message}`);
+			} else {
+			}
+		}
+    })
+	
+	return function () {
+      unmounted = true;
+      source.cancel("Cancelling in cleanup");
+    };
   }, []);
   
   return (
+	<div>
+	<Modal
+     aria-labelledby="transition-modal-title"
+     aria-describedby="transition-modal-description"
+     className={classes.modal}
+     open={open}
+     onClose={handleClose}
+     closeAfterTransition
+     BackdropComponent={Backdrop}
+     BackdropProps={{
+     timeout: 500,
+     }}
+    >
+      <Fade in={open}>
+        <div className={classes.modal_paper}>
+        이름: <TextField
+        	  onChange={handleChange}
+              className="validate"
+              name="name"
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+         	  label="Name"
+             />
+        이메일: <TextField
+        	   onChange={handleChange}
+       		   className="validate"
+       		   name="email"
+       	       variant="outlined"
+       	       margin="normal"
+       	       required
+       	       fullWidth
+       	       id="email"
+       	       label="Email"
+         	  />
+       비밀번호: <TextField
+       		   onChange={handleChange}
+      		   className="validate"
+      		   name="password"
+      	       variant="outlined"
+      	       margin="normal"
+      	       required
+      	       fullWidth
+      	       id="password"
+      	       label="Password"
+      	       type= {view ? "text" : "password"}
+       	       InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleView}>
+                      	{view ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                ),
+               }}
+        	  />  
+       그룹: <br/><FormControl className={classes.formControl}>
+       			   <Select
+       			    id="group"
+       			    name="group"
+       			    onChange={handleChange}
+       			    label="Group"
+       			    autoWidth
+       			    defaultValue={groupList[0]}
+       			    value={group}
+       			   >
+       			     {groupList.map((name) => (
+       			    	<MenuItem key={name} value={name}>{name}</MenuItem> 
+       			     ))}
+       			   </Select>
+       			 </FormControl><br />
+       VM: <TextField
+       		onChange={handleChange}
+            className="validate"
+            name="VMs"
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="vm"
+          	label="VM"
+           />    
+          <Button
+           onClick={handleCreate}
+           variant="contained"
+           color="secondary"
+           className={classes.submit}
+       	   disabled={name === '' || email === '' || password === '' || group === '' || virt.length === 0}
+          >
+            사용자 생성
+          </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+           onClick={handleClose}
+           variant="contained"
+           color="primary"
+           className={classes.submit}
+          >
+            취소
+          </Button>
+        </div>
+      </Fade>
+    </Modal>
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="custom pagination table">
         <TableHead>
@@ -231,5 +419,9 @@ export default function Users() {
         </TableFooter>
       </Table>
     </TableContainer>
+    <Button variant="contained" color="secondary" className={classes.button} onClick={handleOpen}> 
+      새로운 사용자 생성
+    </Button>
+    </div>
   );
 }
