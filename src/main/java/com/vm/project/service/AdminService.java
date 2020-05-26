@@ -19,6 +19,15 @@ public class AdminService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	public ResponseEntity<Admin> getAdminByEmail(String email) {
+		Admin _admin = adminRepository.findByEmail(email);
+		if(_admin != null) {
+			return new ResponseEntity<>(_admin, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
 	public ResponseEntity<Admin> checkAdmin(Admin admin) {
 		Admin _admin = adminRepository.findByEmail(admin.getEmail());
 		
@@ -46,4 +55,12 @@ public class AdminService {
 		}
 	}
 	
+	public ResponseEntity<HttpStatus> deleteAdminByEmail(String email) {
+		try {
+			adminRepository.deleteByEmail(email);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
 }

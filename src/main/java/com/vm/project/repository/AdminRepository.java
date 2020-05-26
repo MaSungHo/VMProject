@@ -6,4 +6,5 @@ import com.vm.project.model.Admin;
 
 public interface AdminRepository extends MongoRepository<Admin, String>{
 	Admin findByEmail(String email);
+	void deleteByEmail(String email);
 }
