@@ -31,7 +31,7 @@ public class AdminController {
 	
 	@ApiOperation(value = "관리자를 이메일로 조회")
 		@ApiImplicitParams({
-			@ApiImplicitParam(name = "email", value = "삭제할 관리자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+			@ApiImplicitParam(name = "email", value = "조회할 관리자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 		})
 	@GetMapping("/admin/{email:.+}/")
 	public ResponseEntity<Admin> getAdminByEmail(@PathVariable String email) {

@@ -211,6 +211,12 @@ export default function Users() {
 		password: password,
 		group: group,
 		VMs: virt
+	  }) .then(res => {
+		  axios.get('http://localhost:8090/users')
+		  	.then(response => {
+		  		setUsers(response.data);
+		  		setLength(response.data.length);
+		  	})
 	  })
 	  setOpen(false);
   }
@@ -222,7 +228,7 @@ export default function Users() {
 	  .then(res => {
 	          if (!unmounted) {
 	            setUsers(res.data);
-	            setLength(res.data.length)
+	            setLength(res.data.length);
 	            if (axios.isCancel()) {
 	              console.log(`request cancelled:${e.message}`);
 	            } else {

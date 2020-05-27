@@ -1,9 +1,20 @@
 package com.vm.project;
 
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.management.compute.VirtualMachine;
 import com.microsoft.azure.management.compute.KnownLinuxVirtualMachineImage;
+import com.microsoft.azure.management.compute.KnownWindowsVirtualMachineImage;
+import com.microsoft.azure.management.compute.AvailabilitySet;
+import com.microsoft.azure.management.compute.AvailabilitySetSkuTypes;
+import com.microsoft.azure.management.compute.CachingTypes;
+import com.microsoft.azure.management.compute.InstanceViewStatus;
+import com.microsoft.azure.management.compute.DiskInstanceView;
+import com.microsoft.azure.management.compute.VirtualMachine;
 import com.microsoft.azure.management.compute.VirtualMachineSizeTypes;
+import com.microsoft.azure.management.network.PublicIPAddress;
+import com.microsoft.azure.management.network.Network;
+import com.microsoft.azure.management.network.NetworkInterface;
+import com.microsoft.azure.management.resources.ResourceGroup;
+import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 import com.microsoft.azure.management.appservice.WebApp;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.management.storage.SkuName;
@@ -12,17 +23,10 @@ import com.microsoft.azure.management.sql.SqlDatabase;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 import com.microsoft.azure.management.resources.fluentcore.utils.SdkContext;
-
+import com.microsoft.azure.management.resources.fluentcore.model.Creatable;
 import com.microsoft.rest.LogLevel;
-
-import com.microsoft.azure.storage.*;
-import com.microsoft.azure.storage.blob.*;
-
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.Scanner;
 
 public class AzureApp {
 
@@ -40,21 +44,60 @@ public class AzureApp {
                     .withLogLevel(LogLevel.BASIC)
                     .authenticate(credFile)
                     .withDefaultSubscription();
-
-            // create a Ubuntu virtual machine in a new resource group
-            VirtualMachine linuxVM = azure.virtualMachines().define("testLinuxVM")
-                    .withRegion(Region.US_EAST)
-                    .withNewResourceGroup("sampleVmResourceGroup")
-                    .withNewPrimaryNetwork("10.0.0.0/24")
-                    .withPrimaryPrivateIPAddressDynamic()
-                    .withoutPrimaryPublicIPAddress()
-                    .withPopularLinuxImage(KnownLinuxVirtualMachineImage.CENTOS_7_2)
-                    .withRootUsername(userName)
-                    .withSsh(sshKey)
-                    .withUnmanagedDisks()
-                    .withSize(VirtualMachineSizeTypes.BASIC_A0)
-                    .create();
-
+            //리소스 그룹 생성
+            ResourceGroup resourceGroup = azure.resourceGroups()
+            	    .define("testResourceGroup")
+            	    .withRegion(Region.US_EAST)
+            	    .create();
+            
+            //가용성 집합 생성
+            AvailabilitySet availabilitySet = azure.availabilitySets()
+            	    .define("testAvailableSet")
+            	    .withRegion(Region.US_EAST)
+            	    .withExistingResourceGroup("testResourceGroup")
+            	    .withSku(AvailabilitySetSkuTypes.MANAGED)
+            	    .create();
+            
+            //공용 IP 생성. 가상머신과 통신해야 함.
+            PublicIPAddress publicIPAddress = azure.publicIPAddresses()
+            	    .define("testPublicIP")
+            	    .withRegion(Region.US_EAST)
+            	    .withExistingResourceGroup("testResourceGroup")
+            	    .withDynamicIP()
+            	    .create();
+            
+            //가상 네트워크 생성
+            Network network = azure.networks()
+            	    .define("testVN")
+            	    .withRegion(Region.US_EAST)
+            	    .withExistingResourceGroup("testResourceGroup")
+            	    .withAddressSpace("10.0.0.0/16")
+            	    .withSubnet("testSubnet","10.0.0.0/24")
+            	    .create();
+            
+            //네트워크 인터페이스 생성. 가상 머신이 가상 네트워크에서 통신할 때 필요함.
+            NetworkInterface networkInterface = azure.networkInterfaces()
+            	    .define("testNIC")
+            	    .withRegion(Region.US_EAST)
+            	    .withExistingResourceGroup("testResourceGroup")
+            	    .withExistingPrimaryNetwork(network)
+            	    .withSubnet("testSubnet")
+            	    .withPrimaryPrivateIPAddressDynamic()
+            	    .withExistingPrimaryPublicIPAddress(publicIPAddress)
+            	    .create();
+            
+            VirtualMachine virtualMachine = azure.virtualMachines()
+            	    .define("testVM")
+            	    .withRegion(Region.US_EAST)
+            	    .withExistingResourceGroup("testResourceGroup")
+            	    .withExistingPrimaryNetworkInterface(networkInterface)
+            	    .withLatestWindowsImage("MicrosoftWindowsServer", "WindowsServer", "2012-R2-Datacenter")
+            	    .withAdminUsername("azureuser")
+            	    .withAdminPassword("Azure12345678")
+            	    .withComputerName("testVM")
+            	    .withExistingAvailabilitySet(availabilitySet)
+            	    .withSize(VirtualMachineSizeTypes.STANDARD_D3_V2)
+            	    .create();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

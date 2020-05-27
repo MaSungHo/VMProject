@@ -78,7 +78,9 @@ export default function User({match, history}) {
 	const [group, setGroup] = useState('');
 	const [virt, setVirt] = useState([]);
 	const [groupList, setGroupList] = useState([]);
+	const [isAdmin, setIsAdmin] = useState(false);
 	
+	// 사용자 삭제에 대한 함수------------------------------------------------------------------
 	const handleOpen = () => {
 		setOpen(true);
 	}
@@ -92,7 +94,9 @@ export default function User({match, history}) {
 		axios.delete('http://localhost:8090/users/' + match.params.email + '/');
 		history.goBack();
 	}
+	//----------------------------------------------------------------------------------
 	
+	// 사용자 정보 변경에 대한 함수----------------------------------------------------------------
 	const handleModalOpen = () => {
 		setModal(true);
 	}
@@ -101,18 +105,10 @@ export default function User({match, history}) {
 		setModal(false);
 	}
 	
-	// 임시로 이름 붙여놓은 함수
+	
 	const handleModal = () => {
 		handleChangeUser()
 		setModal(false);
-	}
-	
-	const handleView = () => {
-		setView(!view);
-	}
-	
-	const goBack = () => {
-		history.goBack();
 	}
 	
 	const handleChange = (e) => {
@@ -141,7 +137,23 @@ export default function User({match, history}) {
 			password: password,
 			group: group,
 			VMs: virt
+		}) .then(res => {
+			axios.get('http://localhost:8090/users/' + email + '/')
+				.then(response => {
+					history.replace('/users/' + email);
+					setUser(response.data);
+				})
 		})
+	}
+	//----------------------------------------------------------------------------------
+	
+	// 비밀번호를 보일지 말지 결정하는 함수
+	const handleView = () => {
+		setView(!view);
+	}
+	
+	// 이전 페이지로 돌아가는 함수
+	const goBack = () => {
 		history.goBack();
 	}
 	
@@ -180,10 +192,22 @@ export default function User({match, history}) {
 				}
 			}
 	    })
+      axios.get('http://localhost:8090/admin/' + match.params.email + '/')
+	    .then(res => {
+	    	if (!unmounted) {
+			    if(res.status === 200) {
+			    	setIsAdmin(true);
+			    }
+				if (axios.isCancel()) {
+				  console.log(`request cancelled:${e.message}`);
+				} else {
+				}
+			}
+	    })
 	  return function () {
 		unmounted = true;
 		source.cancel("Cancelling in cleanup");
-      };
+    };
 	}, []);
 
   return (
@@ -191,6 +215,7 @@ export default function User({match, history}) {
       <Helmet>
         <title>VM Web User Info</title>
       </Helmet> <br/>
+      {/*사용자 정보를 수정하는 Modal-----------------------------------------------------------*/}
       <Modal
        aria-labelledby="transition-modal-title"
        aria-describedby="transition-modal-description"
@@ -298,7 +323,9 @@ export default function User({match, history}) {
           </div>
         </Fade>
       </Modal>
+      {/*사용자 정보를 수정하는 Modal-----------------------------------------------------------*/}
       
+      {/*사용자를 삭제하는  Modal--------------------------------------------------------------*/}
       <Modal
        aria-labelledby="transition-modal-title"
        aria-describedby="transition-modal-description"
@@ -334,9 +361,10 @@ export default function User({match, history}) {
            </div>
          </Fade>
        </Modal>
+       {/*사용자를 삭제하는  Modal--------------------------------------------------------------*/}
        
       <Typography variant="h4" gutterBottom>
-      &nbsp;&nbsp;&nbsp;Profile - {user.name}
+      &nbsp;&nbsp;&nbsp;User Profile
       </Typography> <br/>
       <Paper className={classes.paper}>
         <Grid container spacing={10}>
@@ -375,13 +403,24 @@ export default function User({match, history}) {
                 <Button variant="contained" color="primary" onClick={goBack}>
                   뒤로 가기 
                 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button variant="contained" color="secondary" onClick={handleOpen}> 
-                  사용자 삭제
-                </Button>
+                {isAdmin === true ? (
+                	<Button variant="contained" color="secondary"> 
+                		관리자 권한 삭제
+                	</Button> ): ( 
+                	<>
+                	<Button variant="contained" color="primary"> 
+                		관리자 권한 부여
+                	</Button>&nbsp;&nbsp;&nbsp;&nbsp;
+                	<Button variant="contained" color="secondary" onClick={handleOpen}> 
+                    	사용자 삭제
+                    </Button>
+                    </>)
+                }
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" color="error">사용자</Typography>
+              {isAdmin === true ?  <Typography variant="subtitle1" color="error">관리자</Typography> : 
+            	  <Typography variant="subtitle1" color="error">사용자</Typography>}
             </Grid>
           </Grid>
         </Grid>
