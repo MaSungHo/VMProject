@@ -67,16 +67,14 @@ const useStyles = makeStyles((theme) => ({
 export default function User({match, history}) {
 	const classes = useStyles();
 	const [user, setUser] = useState([]);
-	const [length, setLength] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [modal, setModal] = useState(false);
 	const [view, setView] = useState(false);
-	
+	const [num_VM, setNum_VM] = useState(0);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [group, setGroup] = useState('');
-	const [virt, setVirt] = useState([]);
 	const [groupList, setGroupList] = useState([]);
 	const [isAdmin, setIsAdmin] = useState(false);
 	
@@ -124,10 +122,6 @@ export default function User({match, history}) {
 		else if(e.target.name === 'group') {
 			setGroup(e.target.value)
 		}
-		else if(e.target.name === 'VMs') {
-			var Vm_array = e.target.value.split(',');
-			setVirt(Vm_array)
-		} 
 	}
 	
 	const handleChangeUser = () => {
@@ -136,7 +130,7 @@ export default function User({match, history}) {
 			email: email,
 			password: password,
 			group: group,
-			VMs: virt
+			num_VM: num_VM
 		}) .then(res => {
 			axios.get('http://localhost:8090/users/' + email + '/')
 				.then(response => {
@@ -156,12 +150,6 @@ export default function User({match, history}) {
 	const goBack = () => {
 		history.goBack();
 	}
-	
-	var vms = new Array();
-	for(var i=0;i<length;i++){
-	    vms[i]=user.VMs[i];
-	}
-	let vm_array = vms.map((value, key) => <li key = {key}>{value}</li>);
 		
 	useEffect(() => {
 	  let unmounted = false;
@@ -174,8 +162,7 @@ export default function User({match, history}) {
 		    setEmail(res.data.email);
 		    setPassword(res.data.password);
 		    setGroup(res.data.group);
-		    setVirt(res.data.VMs);
-		    setLength(res.data.VMs.length);
+		    setNum_VM(res.data.num_VM)
 			if (axios.isCancel()) {
 			  console.log(`request cancelled:${e.message}`);
 			} else {
@@ -291,7 +278,7 @@ export default function User({match, history}) {
                    ))}
                  </Select>
                </FormControl><br />
-          VM: <TextField
+          VM : <TextField
           		onChange={handleChange}
                 className="validate"
                 name="VMs"
@@ -300,15 +287,16 @@ export default function User({match, history}) {
                 required
                 fullWidth
                 id="vm"
-             	label="VM"
-             	defaultValue={user.VMs}
+                label="VM"
+                disabled
+           	    defaultValue={user.num_VM}
                />    
             <Button
              onClick={handleModal}
              variant="contained"
              color="secondary"
              className={classes.submit}
-             disabled={name === '' || email === '' || password === '' || group === '' || virt.length === 0}
+             disabled={name === '' || email === '' || password === '' || group === ''}
             >
               수정
             </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -392,7 +380,7 @@ export default function User({match, history}) {
                 </Typography>
                 <Divider />
                 <Typography variant="h6" gutterBottom>
-                  VM: {vm_array}
+                  VM : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{user.num_VM}개
                 </Typography>
                 <Divider />
               </Grid>

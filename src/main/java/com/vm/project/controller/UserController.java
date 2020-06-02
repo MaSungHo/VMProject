@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vm.project.repository.UserRepository;
 import com.vm.project.model.User;
 import com.vm.project.service.UserService;
 
@@ -27,9 +26,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @CrossOrigin("*")
 public class UserController {
-	
-	@Autowired
-	UserRepository userRepository;
 	
 	@Autowired
 	UserService userService;

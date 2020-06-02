@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 import LoginForm from '../component/LoginForm';
 import { connect } from 'react-redux'; // Login 컨테이너와 리덕스를 연결해줌.
-import { loginRequest } from '../actions/Authentication'; 
+import { getStatusRequest, loginRequest } from '../actions/Authentication'; 
 import '../css/custom.css';
 
 class Home extends Component {
+	
+	componentDidMount() {
+		this.props.getStatusRequest();
+	}
 	
 	handleLogin = (email, password) => {
 		return this.props.loginRequest(email, password).then(
@@ -29,13 +33,18 @@ class Home extends Component {
 	
 	render() {
 		return (
-	        <div>
-	        <Helmet>
-		      <title>VM Web Admin Project</title>
-		    </Helmet>
-			  <LoginForm mode={true} 
-			  onLogin={this.handleLogin}/>
-			</div>
+	          <div>
+	            {this.props.status2.isLoggedIn === false ? (
+	              <div>
+	                <Helmet>
+		              <title>VM Web Admin Project</title>
+		            </Helmet>
+			          <LoginForm mode={true} 
+			           onLogin={this.handleLogin}/>
+			      </div> ): ( <div> Hello </div> )
+	            }
+			  </div>
+			
 		);
 	}
 }
@@ -43,12 +52,16 @@ class Home extends Component {
 //----------------리덕스의 state와 thunk 함수를 Login 컴포넌트로 들어온 props처럼 사용할 수 있게 함.-----------------
 const mapStateToProps = (state) => {
 	return {
-		status: state.Authentication.login.status
+		status: state.Authentication.login.status,
+		status2: state.Authentication.status
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
+		getStatusRequest: () => {
+			return dispatch(getStatusRequest());
+		},
 		loginRequest: (email, password) => {
 			return dispatch(loginRequest(email, password));
 		}

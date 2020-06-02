@@ -58,7 +58,7 @@ public class UserService {
 	
 	public ResponseEntity<User> createUser(User user) {
 		try {
-			User _user = userRepository.save(new User(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getGroup(), user.getVMs()));
+			User _user = userRepository.save(new User(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getGroup(), user.getNum_VM()));
 			Group _group = groupRepository.findByName(user.getGroup());
 			if(_group != null) {
 				_group.setNum_people(_group.getNum_people() + 1);
@@ -89,7 +89,7 @@ public class UserService {
 			_user.setName(user.getName());
 			_user.setEmail(user.getEmail());
 			_user.setGroup(user.getGroup());
-			_user.setVMs(user.getVMs());
+			_user.setNum_VM(user.getNum_VM());
 			return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
