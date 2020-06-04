@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vm.project.model.ExistingVM;
+import com.vm.project.model.VmInfo;
 import com.vm.project.model.VM;
 import com.vm.project.service.VMService;
 
@@ -33,6 +33,12 @@ public class VMController {
 		return vmService.getAllVMs();
 	}
 	
+	@ApiOperation(value = "만들 수 있는 VM 리스트 조회")
+	@GetMapping("/VMs/list")
+	public ResponseEntity<List<String>> getCreatableVMList() {
+		return vmService.getCreatableVMList();
+	}
+	
     @ApiOperation(value = "특정 VM 종류 조회")
 	    @ApiImplicitParams({
 	            @ApiImplicitParam(name = "name", value = "새로 만들 VM 종류", required = true, dataType = "string", paramType = "path", defaultValue = ""),
@@ -44,8 +50,8 @@ public class VMController {
     
     @ApiOperation(value = "새로운 VM 생성")
     @PostMapping("/VMs/new")
-    public ResponseEntity<HttpStatus> createVMByName(@RequestBody ExistingVM existingVM) {
-    	return vmService.createVMByName(existingVM);
+    public ResponseEntity<HttpStatus> createVMByName(@RequestBody VmInfo vmInfo) {
+    	return vmService.createVMByName(vmInfo);
     }
     
 }

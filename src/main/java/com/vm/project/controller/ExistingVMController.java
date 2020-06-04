@@ -1,6 +1,7 @@
 package com.vm.project.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class ExistingVMController {
 		return existingVMService.getVMByVMName(vmName);
 	}
 	
+	/*
 	@ApiOperation(value = "VM에 관한 정보 조회")
 		@ApiImplicitParams({
 			@ApiImplicitParam(name = "resourceGroup", value = "정보 조회할 VM이 속한 resourceGroup의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
@@ -54,6 +56,15 @@ public class ExistingVMController {
 	@GetMapping("/existing/{resourceGroup}/{vmName}")
 	public ResponseEntity<List<String>> getVMInfo(@PathVariable String resourceGroup, @PathVariable String vmName) {
 		return existingVMService.getVMInfo(resourceGroup, vmName);
+	} */
+	
+	@ApiOperation(value = "특정 사용자에게 VM 종류 조회")
+		@ApiImplicitParams({
+			@ApiImplicitParam(name = "email", value = "VM 종류를 조회할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+		})
+	@GetMapping("/existing/{email:.+}/list")
+	public ResponseEntity<Map<String, String>> getVMListByEmail(@PathVariable String email) {
+		return existingVMService.getVMListByEmail(email);
 	}
 	
 	@ApiOperation(value = "VM를 중지")

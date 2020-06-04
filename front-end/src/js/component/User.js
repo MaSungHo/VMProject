@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -28,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
   paper: {
 	margin: 'auto',
     padding: theme.spacing(2),
-    margin: 'auto',
+    marginLeft: '5%',
+    marginRight: '5%',
     maxWidth: 1500,
     height: 500,
     maxHeight: 700
@@ -76,7 +78,6 @@ export default function User({match, history}) {
 	const [password, setPassword] = useState('');
 	const [group, setGroup] = useState('');
 	const [groupList, setGroupList] = useState([]);
-	const [isAdmin, setIsAdmin] = useState(false);
 	
 	// 사용자 삭제에 대한 함수------------------------------------------------------------------
 	const handleOpen = () => {
@@ -173,18 +174,6 @@ export default function User({match, history}) {
 	    .then(res => {
 	    	if (!unmounted) {
 			    setGroupList(res.data);
-				if (axios.isCancel()) {
-				  console.log(`request cancelled:${e.message}`);
-				} else {
-				}
-			}
-	    })
-      axios.get('http://localhost:8090/admin/' + match.params.email + '/')
-	    .then(res => {
-	    	if (!unmounted) {
-			    if(res.status === 200) {
-			    	setIsAdmin(true);
-			    }
 				if (axios.isCancel()) {
 				  console.log(`request cancelled:${e.message}`);
 				} else {
@@ -358,7 +347,7 @@ export default function User({match, history}) {
         <Grid container spacing={10}>
           <Grid item>
             <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="complex" src="/User.png" />
+              <img className={classes.img} alt="complex" src="/img/User.png" />
             </ButtonBase>
           </Grid>
           <Grid item xs={12} sm container>
@@ -379,9 +368,12 @@ export default function User({match, history}) {
                   그룹: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{user.group}
                 </Typography>
                 <Divider />
-                <Typography variant="h6" gutterBottom>
-                  VM : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{user.num_VM}개
-                </Typography>
+                  <Typography variant="h6" gutterBottom>
+                    VM : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Link to={"/VM/" + user.email}>
+                      {user.num_VM}개
+                    </Link>
+                  </Typography>
                 <Divider />
               </Grid>
               <Grid item>
@@ -391,24 +383,13 @@ export default function User({match, history}) {
                 <Button variant="contained" color="primary" onClick={goBack}>
                   뒤로 가기 
                 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                {isAdmin === true ? (
-                	<Button variant="contained" color="secondary"> 
-                		관리자 권한 삭제
-                	</Button> ): ( 
-                	<>
-                	<Button variant="contained" color="primary"> 
-                		관리자 권한 부여
-                	</Button>&nbsp;&nbsp;&nbsp;&nbsp;
-                	<Button variant="contained" color="secondary" onClick={handleOpen}> 
-                    	사용자 삭제
-                    </Button>
-                    </>)
-                }
+                <Button variant="contained" color="secondary" onClick={handleOpen}> 
+                    사용자 삭제
+                </Button>
               </Grid>
             </Grid>
             <Grid item>
-              {isAdmin === true ?  <Typography variant="subtitle1" color="error">관리자</Typography> : 
-            	  <Typography variant="subtitle1" color="error">사용자</Typography>}
+              <Typography variant="subtitle1" color="error">사용자</Typography>
             </Grid>
           </Grid>
         </Grid>

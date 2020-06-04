@@ -221,7 +221,7 @@ export default function Groups() {
 	  			<CardActionArea>
       				<CardMedia
       				className={classes.media}
-      				image="/Ajou-template.jpg"
+      				image="/img/Ajou-template.jpg"
       				title={group.name}
       			    />
       				<CardContent>

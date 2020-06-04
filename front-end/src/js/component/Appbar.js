@@ -23,6 +23,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import PeopleIcon from '@material-ui/icons/People';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import ComputerIcon from '@material-ui/icons/Computer';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
 import Box from '@material-ui/core/Box';
@@ -215,16 +216,16 @@ export default function Appbar(props) {
         </div>
         <Divider />
         <List>
-          {['사용자 관리', '그룹 관리'].map((text, index) => (
+          {['사용자 관리', '그룹 관리', '가상 머신'].map((text, index) => (
         	<Link key={index} color = 'inherit' component={RouterLink} to=
         		{index === 0 ? "/users" : (
-        				index === 1 ? "/groups" : "/") }>
+        				index === 1 ? "/groups" : "/VM") }>
               <ListItem button key={index} onClick={event => {
             	handleDrawerClose();
                 }} >
                   <ListItemIcon>
                     { index === 0 ? <PeopleIcon /> : (
-              		    index === 1 ? <GroupWorkIcon /> : <PeopleIcon />
+              		    index === 1 ? <GroupWorkIcon /> : <ComputerIcon />
                     )}
                   </ListItemIcon>
                 <ListItemText primary={text} />

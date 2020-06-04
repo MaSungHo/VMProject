@@ -13,15 +13,16 @@ import com.microsoft.azure.management.compute.PurchasePlan;
 import com.microsoft.azure.management.compute.ImageReference;
 import com.microsoft.azure.management.compute.VirtualMachine;
 import com.microsoft.azure.management.compute.implementation.ImageReferenceInner;
-import com.microsoft.azure.management.network.PublicIPAddress;
 import com.microsoft.azure.management.resources.ResourceGroup;
 import com.microsoft.azure.management.resources.fluentcore.arm.Region;
+import com.microsoft.azure.management.resources.fluentcore.utils.SdkContext;
 import com.microsoft.rest.LogLevel;
 import java.io.File;
 
 import com.vm.project.model.ExistingVM;
 import com.vm.project.model.User;
 import com.vm.project.model.VM;
+import com.vm.project.model.VmInfo;
 import com.vm.project.repository.ExistingVMRepository;
 import com.vm.project.repository.UserRepository;
 import com.vm.project.repository.VMRepository;
@@ -51,6 +52,29 @@ public class VMService {
 		}
 	}
 	
+	public ResponseEntity<List<String>> getCreatableVMList() {
+		try {
+			List<VM> vms = new ArrayList<VM>();
+			vmRepository.findAll().forEach(vms::add);
+			
+			if(vms.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			List<String> vmList = new ArrayList<String>();
+			
+			for(VM e : vms)
+			{
+				vmList.add(e.getName());
+			}
+			
+			return new ResponseEntity<>(vmList, HttpStatus.OK);
+			
+		} catch(Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	public ResponseEntity<VM> getVMByName(String name) {
 		VM _vm = vmRepository.findByName(name);
 		if(_vm != null) {
@@ -60,16 +84,20 @@ public class VMService {
 		}
 	}
 	
-	public ResponseEntity<HttpStatus> createVMByName(ExistingVM existingVM) {
-		System.out.println(existingVM.getAdminName());
-		System.out.println(existingVM.getAdminPassword());
+	public ResponseEntity<HttpStatus> createVMByName(VmInfo vmInfo) {
 		
 		String offer;
 		String publisher;
 		String sku;
 		String version;
+		String[] resourceName = vmInfo.getEmail().split("@");
+		String adminName = "admin_" + resourceName[0];
+		String adminPassword = "Password_" + resourceName[0] + "_00!@";
+		System.out.println(resourceName[0]);
+		System.out.println(adminName);
+		System.out.println(adminPassword);
 		
-		VM _vm = vmRepository.findByName(existingVM.getName());
+		VM _vm = vmRepository.findByName(vmInfo.getOsName());
 		offer = _vm.getOffer();
 		publisher = _vm.getPublisher();
 		sku = _vm.getSku();
@@ -83,89 +111,93 @@ public class VMService {
                     .withDefaultSubscription();
             //리소스 그룹 생성
             ResourceGroup resourceGroup = azure.resourceGroups()
-            	    .define(existingVM.getResourceGroupName()) 
+            	    .define(resourceName[0]) 
             	    .withRegion(Region.KOREA_CENTRAL)
             	    .create();
             
-            //공용 IP 주소 생성
-            PublicIPAddress publicIPAddress = azure.publicIPAddresses()
-            	    .define(existingVM.getPublicAddressName()) /////////////////////////////////////
-            	    .withRegion(Region.KOREA_CENTRAL)
-            	    .withExistingResourceGroup(existingVM.getResourceGroupName())
-            	    .withStaticIP()
-            	    .create();
             // Marketplace image를 위한 플랜.
             PurchasePlan plan = new PurchasePlan();
             plan.withName("pro-20_04-lts");
             plan.withPublisher("canonical");
             plan.withProduct("0001-com-ubuntu-pro-focal"); //offer와 같음
             
-            if(existingVM.getName().contains("Windows")) {
+            if(vmInfo.getOsName().contains("Windows")) {
             	VirtualMachine virtualMachine = azure.virtualMachines()
-            	    .define(existingVM.getVmName()) /////////////////////////////////////
+            	    .define(vmInfo.getVmName()) /////////////////////////////////////
             	    .withRegion(Region.KOREA_CENTRAL)
-            	    .withExistingResourceGroup(existingVM.getResourceGroupName())
+            	    .withExistingResourceGroup(resourceName[0])
             	    .withNewPrimaryNetwork("10.0.0.0/24")
             	    .withPrimaryPrivateIPAddressDynamic()
-            	    .withExistingPrimaryPublicIPAddress(publicIPAddress) 
+            	    .withNewPrimaryPublicIPAddress(SdkContext.randomResourceName("public", 20)) 
             	    .withSpecificWindowsImageVersion(new ImageReference(new ImageReferenceInner()
             	    		.withOffer(offer)
             	    		.withPublisher(publisher)
             	    		.withSku(sku)
             	    		.withVersion(version)))
-            	    .withAdminUsername(existingVM.getAdminName()) /////////////////////////////////////
-            	    .withAdminPassword(existingVM.getAdminPassword()) /////////////////////////////////////
-            	    .withComputerName(existingVM.getComputerName()) /////////////////////////////////////
-            	    .withNewAvailabilitySet(existingVM.getAvailableSetName()) /////////////////////////////////////
+            	    .withAdminUsername(adminName) /////////////////////////////////////
+            	    .withAdminPassword(adminPassword) /////////////////////////////////////
+            	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
+            	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
             	    .withSize("Standard_B1ls")
             	    .create();
             }
-            else if(existingVM.getName().equals("Ubuntu 20.04 LTS")) {
+            else if(vmInfo.getOsName().equals("Ubuntu 20.04 LTS")) {
             	VirtualMachine virtualMachine = azure.virtualMachines()
-                	    .define(existingVM.getVmName()) /////////////////////////////////////
+                	    .define(vmInfo.getVmName()) /////////////////////////////////////
                 	    .withRegion(Region.KOREA_CENTRAL)
-                	    .withExistingResourceGroup(existingVM.getResourceGroupName())
+                	    .withExistingResourceGroup(resourceName[0])
                 	    .withNewPrimaryNetwork("10.0.0.0/24")
                 	    .withPrimaryPrivateIPAddressDynamic()
-                	    .withExistingPrimaryPublicIPAddress(publicIPAddress)
+                	    .withNewPrimaryPublicIPAddress(SdkContext.randomResourceName("public", 20))
                 	    .withSpecificLinuxImageVersion(new ImageReference(new ImageReferenceInner()
                 	    		.withOffer(offer)
                 	    		.withPublisher(publisher)
                 	    		.withSku(sku)
                 	    		.withVersion(version)))
-                	    .withRootUsername(existingVM.getAdminName()) /////////////////////////////////////
-                	    .withRootPassword(existingVM.getAdminPassword()) /////////////////////////////////////
-                	    .withComputerName(existingVM.getComputerName()) /////////////////////////////////////
-                	    .withNewAvailabilitySet(existingVM.getAvailableSetName()) /////////////////////////////////////
+                	    .withRootUsername(adminName) /////////////////////////////////////
+                	    .withRootPassword(adminPassword) /////////////////////////////////////
+                	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
+                	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
                 	    .withPlan(plan)
                 	    .withSize("Standard_B1ls")
                 	    .create();
             }
             else {
             	VirtualMachine virtualMachine = azure.virtualMachines()
-                	    .define(existingVM.getVmName()) /////////////////////////////////////
+                	    .define(vmInfo.getVmName()) /////////////////////////////////////
                 	    .withRegion(Region.KOREA_CENTRAL)
-                	    .withExistingResourceGroup(existingVM.getResourceGroupName())
+                	    .withExistingResourceGroup(resourceName[0])
                 	    .withNewPrimaryNetwork("10.0.0.0/24")
                 	    .withPrimaryPrivateIPAddressDynamic()
-                	    .withExistingPrimaryPublicIPAddress(publicIPAddress)
+                	    .withNewPrimaryPublicIPAddress(SdkContext.randomResourceName("public", 20))
                 	    .withSpecificLinuxImageVersion(new ImageReference(new ImageReferenceInner()
                 	    		.withOffer(offer)
                 	    		.withPublisher(publisher)
                 	    		.withSku(sku)
                 	    		.withVersion(version)))
-                	    .withRootUsername(existingVM.getAdminName()) /////////////////////////////////////
-                	    .withRootPassword(existingVM.getAdminPassword()) /////////////////////////////////////
-                	    .withComputerName(existingVM.getComputerName()) /////////////////////////////////////
-                	    .withNewAvailabilitySet(existingVM.getAvailableSetName()) /////////////////////////////////////
+                	    .withRootUsername(adminName) /////////////////////////////////////
+                	    .withRootPassword(adminPassword) /////////////////////////////////////
+                	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
+                	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
                 	    .withSize("Standard_B1ls")
                 	    .create();
             }
             
-            User user = userRepository.findByEmail(existingVM.getUserEmail());
+            User user = userRepository.findByEmail(resourceName[0]);
             user.setNum_VM(user.getNum_VM() + 1);
             userRepository.save(user);
             
+            VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceName[0], vmInfo.getVmName());
+            ExistingVM existingVM = new ExistingVM();
+            existingVM.setName(vmInfo.getOsName());
+            existingVM.setUserEmail(vmInfo.getEmail());
+            existingVM.setResourceGroupName(resourceName[0]);
+            existingVM.setVmName(vmInfo.getVmName());
+            existingVM.setAdminName(adminName);
+            existingVM.setAdminPassword(adminPassword);
+            existingVM.setPublicIPAddress(vm.getPrimaryPublicIPAddress().ipAddress());
+            existingVM.setSize("Standard_B1ls");
+            existingVM.setOsType(vmInfo.getOsName());
             existingVMRepository.save(existingVM);
         	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
         } catch (Exception e) {
@@ -173,4 +205,5 @@ public class VMService {
             return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
+
 }

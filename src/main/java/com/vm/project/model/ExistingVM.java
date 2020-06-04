@@ -12,12 +12,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 	"name",
 	"userEmail",
 	"resourceGroupName",
-	"publicAddressName",
 	"vmName",
 	"adminName",
-	"adminPassword",
-	"computerName",
-	"availableSetName"
+	"adminPassword"
 })
 
 @Document(collection = "ExistingVM")
@@ -34,10 +31,7 @@ public class ExistingVM {
 		
 	@JsonProperty("resourceGroupName")
 	private String resourceGroupName;
-		
-	@JsonProperty("publicAddressName")
-	private String publicAddressName;
-		
+	
 	@JsonProperty("vmName")
 	private String vmName;
 		
@@ -46,29 +40,32 @@ public class ExistingVM {
 		
 	@JsonProperty("adminPassword")
 	private String adminPassword;
-		
-	@JsonProperty("computerName")
-	private String computerName;
-		
-	@JsonProperty("availableSetName")
-	private String availableSetName;
+	
+	@JsonProperty("publicIPAddress")
+	public String publicIPAddress;
+	
+	@JsonProperty("size")
+	public String size;
+	
+	@JsonProperty("osType")
+	private String osType;
 		
 	public ExistingVM() {
 		
 	}
 
-	public ExistingVM(String id, String name, String userEmail, String resourceGroupName, String publicAddressName,
-			String vmName, String adminName, String adminPassword, String computerName, String availableSetName) {
+	public ExistingVM(String id, String name, String userEmail, String resourceGroupName, String vmName,
+			String adminName, String adminPassword, String publicIPAddress, String size, String osType) {
 		this.id = id;
 		this.name = name;
 		this.userEmail = userEmail;
 		this.resourceGroupName = resourceGroupName;
-		this.publicAddressName = publicAddressName;
 		this.vmName = vmName;
 		this.adminName = adminName;
 		this.adminPassword = adminPassword;
-		this.computerName = computerName;
-		this.availableSetName = availableSetName;
+		this.publicIPAddress = publicIPAddress;
+		this.size = size;
+		this.osType = osType;
 	}
 
 	public String getId() {
@@ -91,20 +88,16 @@ public class ExistingVM {
 		return userEmail;
 	}
 
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
 	public String getResourceGroupName() {
 		return resourceGroupName;
 	}
 
 	public void setResourceGroupName(String resourceGroupName) {
 		this.resourceGroupName = resourceGroupName;
-	}
-
-	public String getPublicAddressName() {
-		return publicAddressName;
-	}
-
-	public void setPublicAddressName(String publicAddressName) {
-		this.publicAddressName = publicAddressName;
 	}
 
 	public String getVmName() {
@@ -131,21 +124,28 @@ public class ExistingVM {
 		this.adminPassword = adminPassword;
 	}
 
-	public String getComputerName() {
-		return computerName;
+	public String getPublicIPAddress() {
+		return publicIPAddress;
 	}
 
-	public void setComputerName(String computerName) {
-		this.computerName = computerName;
+	public void setPublicIPAddress(String publicIPAddress) {
+		this.publicIPAddress = publicIPAddress;
 	}
 
-	public String getAvailableSetName() {
-		return availableSetName;
+	public String getSize() {
+		return size;
 	}
 
-	public void setAvailableSetName(String availableSetName) {
-		this.availableSetName = availableSetName;
+	public void setSize(String size) {
+		this.size = size;
 	}
 
+	public String getOsType() {
+		return osType;
+	}
+
+	public void setOsType(String osType) {
+		this.osType = osType;
+	}
 	
 }

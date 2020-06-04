@@ -2,7 +2,9 @@ package com.vm.project.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +42,7 @@ public class ExistingVMService {
 	}
 	
 	public ResponseEntity<ExistingVM> getVMByVMName(String vmName) {
-		ExistingVM _existingVM = existingVMRepository.findByvmName(vmName);
+		ExistingVM _existingVM = existingVMRepository.findByVmName(vmName);
 		if(_existingVM != null) {
 			return new ResponseEntity<>(_existingVM, HttpStatus.OK);
 		} else {
@@ -48,6 +50,7 @@ public class ExistingVMService {
 		}
 	}
 	
+	/*
 	public ResponseEntity<List<String>> getVMInfo(String resourceGroup, String vmName) {
 		try {
 			List<String> vmInfo = new ArrayList<String>();
@@ -57,8 +60,7 @@ public class ExistingVMService {
                 .authenticate(credFile)
                 .withDefaultSubscription();
         	VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
-        	vmInfo.add(vm.storageProfile().osDisk().osType().toString());
-        	vmInfo.add(Integer.toString(vm.osDiskSize()));
+        	vmInfo.add(vm.getPrimaryPublicIPAddress().ipAddress());
         	vmInfo.add(vm.osProfile().adminUsername());
         	vmInfo.add(vm.osProfile().adminPassword());
         	return new ResponseEntity<>(vmInfo, HttpStatus.OK);
@@ -66,6 +68,22 @@ public class ExistingVMService {
             e.printStackTrace();
             return new ResponseEntity<List<String>>(HttpStatus.INTERNAL_SERVER_ERROR);
         } 
+	} */
+	
+	public ResponseEntity<Map<String, String>> getVMListByEmail(String email) {
+		try {
+			List<ExistingVM> VMs = new ArrayList<ExistingVM>();
+			existingVMRepository.findAll().forEach(VMs::add);
+			
+			Map<String, String> vmMap = new HashMap<String, String>();
+			for(ExistingVM e : VMs) {
+				vmMap.put(e.getName(), e.getVmName());
+			}
+			
+			return new ResponseEntity<>(vmMap, HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	public ResponseEntity<HttpStatus> stopVM(String resourceGroup, String vmName) {
@@ -102,7 +120,7 @@ public class ExistingVMService {
 
 	public ResponseEntity<HttpStatus> deleteVM(String resourceGroup, String vmName) {
 		try {
-			ExistingVM existingVM = existingVMRepository.findByvmName(vmName);
+			ExistingVM existingVM = existingVMRepository.findByVmName(vmName);
 			
 			final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
         	Azure azure = Azure.configure()
@@ -120,7 +138,7 @@ public class ExistingVMService {
             user.setNum_VM(user.getNum_VM() - 1);
             userRepository.save(user);
             
-            existingVMRepository.deleteByvmName(vmName);
+            existingVMRepository.deleteByVmName(vmName);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

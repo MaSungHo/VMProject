@@ -11,10 +11,12 @@ import Index from './container/Index';
 import Home from './container/Home';
 import Users from './container/Users';
 import Groups from './container/Groups';
+import VMs from './container/VMs';
 import NotFound from './container/NotFound';
 import RouteIf from './component/RouteIf';
 import User from './component/User';
 import Group from './component/Group';
+import VM from './component/VM';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
@@ -57,15 +59,23 @@ class App extends Component {
 							<Route exact path="/" component={Home} />
 							<RouteIf
 							 exact path="/users"
-						     component={Users}/>
+						     component={Users} />
 						    <RouteIf
-						     path="/users/:email" component={User} />    
+						     exact path="/users/:email" 
+						     component={User} />   
 							<RouteIf
 							exact path="/groups" 
 							component={Groups} />
 							<RouteIf
-						     path="/groups/:name" component={Group} /> 
-							<Route component={NotFound} />
+						     path="/groups/:name" 
+						     component={Group} />
+							<RouteIf
+						     exact path="/VM" 
+						     component={VMs} />
+							<RouteIf
+						     path="/VM/:email" 
+						     component={VM} />
+							<Route component={NotFound} />	 
 						</Switch>
 					</div>
 				</Router>

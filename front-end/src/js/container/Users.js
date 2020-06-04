@@ -111,6 +111,8 @@ const useStyles2 = makeStyles((theme) => ({
     minWidth: 500,
     maxWidth: 1500,
     marginTop: 20,
+    marginLeft: '3%',
+    marginRight: '5%',
     alignItems: 'center',
   },
   button: {
