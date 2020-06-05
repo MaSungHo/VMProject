@@ -52,7 +52,7 @@ const styles = theme => ({
 	padding: theme.spacing(2, 4, 3),
   },
   image: {
-	backgroundImage : 'url(/Ajou-logo.jpg)',
+	backgroundImage : 'url(/img/Ajou-logo.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],

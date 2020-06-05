@@ -183,13 +183,12 @@ public class VMService {
                 	    .create();
             }
             
-            User user = userRepository.findByEmail(resourceName[0]);
+            User user = userRepository.findByEmail(vmInfo.getEmail());
             user.setNum_VM(user.getNum_VM() + 1);
             userRepository.save(user);
             
             VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceName[0], vmInfo.getVmName());
             ExistingVM existingVM = new ExistingVM();
-            existingVM.setName(vmInfo.getOsName());
             existingVM.setUserEmail(vmInfo.getEmail());
             existingVM.setResourceGroupName(resourceName[0]);
             existingVM.setVmName(vmInfo.getVmName());

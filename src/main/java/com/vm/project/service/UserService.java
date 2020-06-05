@@ -37,6 +37,29 @@ public class UserService {
 		}
 	}
 	
+	public ResponseEntity<List<String>> getUsersEmail() {
+		try {
+			List<User> users = new ArrayList<User>();
+			userRepository.findAll().forEach(users::add);
+			
+			if(users.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			List<String> userList = new ArrayList<String>();
+			
+			for(User e : users)
+			{
+				userList.add(e.getEmail());
+			}
+			
+			return new ResponseEntity<>(userList, HttpStatus.OK);
+			
+		} catch(Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	public ResponseEntity<User> getUserByEmail(String email) {
 		User _user = userRepository.findByEmail(email);
 		if(_user != null) {

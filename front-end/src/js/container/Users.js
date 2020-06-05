@@ -108,10 +108,9 @@ const columns = [
 
 const useStyles2 = makeStyles((theme) => ({
   table: {
-    minWidth: 500,
-    maxWidth: 1500,
+    maxWidth: 1370,
     marginTop: 20,
-    marginLeft: '3%',
+    marginLeft: '5%',
     marginRight: '5%',
     alignItems: 'center',
   },
@@ -120,6 +119,9 @@ const useStyles2 = makeStyles((theme) => ({
 	marginTop: 20,
 	marginLeft: '85%',
 	align: 'right',
+  },
+  cell_button: {
+	marginRight: '10%',  
   },
   modal: {
 	display: 'flex',
@@ -390,9 +392,9 @@ export default function Users() {
         		            </TableCell>
         		          );
         		       })}
-        		       <TableCell>
+        		       <TableCell align="center">
         		         <Link to={"/users/" + user.email}>
-        		           <Button variant="contained" color="primary"> 
+        		           <Button variant="contained" color="primary" className={classes.cell_button}> 
         		              조회
         		           </Button>
         		         </Link>

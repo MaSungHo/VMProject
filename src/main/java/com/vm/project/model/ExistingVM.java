@@ -9,12 +9,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
 	"id",
-	"name",
 	"userEmail",
 	"resourceGroupName",
 	"vmName",
 	"adminName",
-	"adminPassword"
+	"adminPassword",
+	"publicIPAddress",
+	"size",
+	"osType"
 })
 
 @Document(collection = "ExistingVM")
@@ -22,9 +24,6 @@ public class ExistingVM {
 		
 	@JsonProperty("id")
 	private String id;
-		
-	@JsonProperty("name")
-	private String name;
 		
 	@JsonProperty("userEmail")
 	private String userEmail;
@@ -42,10 +41,10 @@ public class ExistingVM {
 	private String adminPassword;
 	
 	@JsonProperty("publicIPAddress")
-	public String publicIPAddress;
+	private String publicIPAddress;
 	
 	@JsonProperty("size")
-	public String size;
+	private String size;
 	
 	@JsonProperty("osType")
 	private String osType;
@@ -54,10 +53,9 @@ public class ExistingVM {
 		
 	}
 
-	public ExistingVM(String id, String name, String userEmail, String resourceGroupName, String vmName,
+	public ExistingVM(String id, String userEmail, String resourceGroupName, String vmName,
 			String adminName, String adminPassword, String publicIPAddress, String size, String osType) {
 		this.id = id;
-		this.name = name;
 		this.userEmail = userEmail;
 		this.resourceGroupName = resourceGroupName;
 		this.vmName = vmName;
@@ -74,14 +72,6 @@ public class ExistingVM {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getUserEmail() {

@@ -2,9 +2,7 @@ package com.vm.project.service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.compute.VirtualMachine;
 import com.microsoft.rest.LogLevel;
+import com.vm.project.jwt.JwtService;
 import com.vm.project.model.ExistingVM;
 import com.vm.project.model.User;
 import com.vm.project.repository.ExistingVMRepository;
@@ -28,7 +27,10 @@ public class ExistingVMService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	public ResponseEntity<List<ExistingVM>> getVMsByEmail(String email) {
+	@Autowired
+	private JwtService jwtService;
+	
+	public ResponseEntity<List<ExistingVM>> getVMsByAdmin(String email) {
 		try {
 			List<ExistingVM> vms = new ArrayList<ExistingVM>();
 			existingVMRepository.findByUserEmail(email).forEach(vms::add);
@@ -41,6 +43,24 @@ public class ExistingVMService {
 		}
 	}
 	
+	public ResponseEntity<List<ExistingVM>> getVMsByEmail(String email, String token) {
+		if(jwtService.isUsable(token)) {
+			try {
+				List<ExistingVM> vms = new ArrayList<ExistingVM>();
+				existingVMRepository.findByUserEmail(email).forEach(vms::add);
+				if(vms.isEmpty()) {
+					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				}
+				return new ResponseEntity<>(vms, HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED); 
+		}
+	}
+	
 	public ResponseEntity<ExistingVM> getVMByVMName(String vmName) {
 		ExistingVM _existingVM = existingVMRepository.findByVmName(vmName);
 		if(_existingVM != null) {
@@ -50,37 +70,17 @@ public class ExistingVMService {
 		}
 	}
 	
-	/*
-	public ResponseEntity<List<String>> getVMInfo(String resourceGroup, String vmName) {
-		try {
-			List<String> vmInfo = new ArrayList<String>();
-			final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
-        	Azure azure = Azure.configure()
-                .withLogLevel(LogLevel.BASIC)
-                .authenticate(credFile)
-                .withDefaultSubscription();
-        	VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
-        	vmInfo.add(vm.getPrimaryPublicIPAddress().ipAddress());
-        	vmInfo.add(vm.osProfile().adminUsername());
-        	vmInfo.add(vm.osProfile().adminPassword());
-        	return new ResponseEntity<>(vmInfo, HttpStatus.OK);
-		} catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<List<String>>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } 
-	} */
-	
-	public ResponseEntity<Map<String, String>> getVMListByEmail(String email) {
+	public ResponseEntity<List<String>> getVMListByEmail(String email) {
 		try {
 			List<ExistingVM> VMs = new ArrayList<ExistingVM>();
 			existingVMRepository.findAll().forEach(VMs::add);
 			
-			Map<String, String> vmMap = new HashMap<String, String>();
+			List<String> vms = new ArrayList<String>();
 			for(ExistingVM e : VMs) {
-				vmMap.put(e.getName(), e.getVmName());
+				vms.add(e.getOsType());
 			}
 			
-			return new ResponseEntity<>(vmMap, HttpStatus.OK);
+			return new ResponseEntity<>(vms, HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -128,10 +128,6 @@ public class ExistingVMService {
                 .authenticate(credFile)
                 .withDefaultSubscription();
         	VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
-        	//azure.publicIPAddresses().deleteByResourceGroup(resourceGroup, existingVM.getPublicAddressName());
-        	//azure.availabilitySets().deleteById(vm.availabilitySetId());
-        	//azure.disks().deleteById(vm.osDiskId());
-        	//azure.networkInterfaces().deleteById(vm.primaryNetworkInterfaceId());
         	azure.virtualMachines().deleteById(vm.id());
         	
         	User user = userRepository.findByEmail(existingVM.getUserEmail());

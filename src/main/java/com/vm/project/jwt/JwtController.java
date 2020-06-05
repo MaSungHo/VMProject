@@ -40,15 +40,4 @@ public class JwtController {
         return token;
     }
 
-	@GetMapping("/user/check")
-	public String check(String token, HttpServletResponse response) {
-		User user = userRepository.findByEmail("maam123@ajou.ac.kr");
-		if(jwtService.isUsable(token)) {
-			return "Yes";
-		}
-		else {
-			return "No";
-		}
-	}
-	
 }

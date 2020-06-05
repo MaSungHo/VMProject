@@ -36,6 +36,12 @@ public class UserController {
 		return userService.getAllUsers();
 	}
 	
+	@ApiOperation(value = "모든 유저 이메일 조회")
+	@GetMapping("/users/all")
+	public ResponseEntity<List<String>> getUsersEmail() {
+		return userService.getUsersEmail();
+	}
+	
     @ApiOperation(value = "특정 유저 정보 조회")
 	    @ApiImplicitParams({
 	            @ApiImplicitParam(name = "email", value = "조회할 사용자의 이메일", required = true, dataType = "string", paramType = "path", defaultValue = ""),

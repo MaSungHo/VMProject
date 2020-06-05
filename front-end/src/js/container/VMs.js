@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '5%',
     backgroundColor: theme.palette.background.paper,
   },
+  img: {
+	width: 300,
+	height: 250,
+  },
   paper: {
 	margin: 'auto',
     padding: theme.spacing(2),
@@ -68,40 +72,111 @@ export default function VMs({match}) {
 	const classes = useStyles();
 	const [checked, setChecked] = useState([0]);
 	const [vmOption, setVmOption] = useState([]);
-	const [vms, setVms] = useState([]);
+	const [infoOpen, setInfoOpen] = useState(false);
+	const [createOpen, setCreateOpen] = useState(false);
+	
+	const [name, setName] = useState("");
+	const [offer, setOffer] = useState("");
+	const [publisher, setPublisher] = useState("");
+	const [sku, setSku] = useState("");
+	const [version, setVersion] = useState("");
+	
+	const [users, setUsers] = useState([]);
+	const [groupList, setGroupList] = useState([]);
+	const [emailList, setEmailList] = useState([]);
+	const [group, setGroup] = useState("");
+	const [email, setEmail] = useState("");
 	
 	useEffect(() => {
 	  let unmounted = false;
 	  let source = axios.CancelToken.source();
+	  axios.get('http://localhost:8090/users')
+	  .then(res => {
+	      if (!unmounted) {
+	        setUsers(res.data);
+	        if (axios.isCancel()) {
+	          console.log(`request cancelled:${e.message}`);
+	        } else {
+	        }
+	      }
+		});
 	  axios.get('http://localhost:8090/VMs')
 	    .then(res => {
 	      if (!unmounted) {
 		    setVmOption(res.data);
-		    console.log(res.data);
 		    if (axios.isCancel()) {
 		      console.log(`request cancelled:${e.message}`);
 		    } else {
 			}
 		  }
 		});
+	  axios.get('http://localhost:8090/groups/list')
+	    .then(res => {
+	    	if (!unmounted) {
+			    setGroupList(res.data);
+				if (axios.isCancel()) {
+				  console.log(`request cancelled:${e.message}`);
+				} else {
+				}
+			}
+	    });
 		return function () {
 		  unmounted = true;
 		  source.cancel("Cancelling in cleanup");
 	    };
 	}, []);
 	
-	const handleToggle = (value) => () => {
-	  const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-
-	  if (currentIndex === -1) {
-	    newChecked.push(value);
-	  } else {
-	    newChecked.splice(currentIndex, 1);
-  	  }
-
-	  setChecked(newChecked);
-    };
+	const openInfoOpen = (vm) => {
+		var vmData = vm;
+		setName(vmData.name);
+		setOffer(vmData.offer);
+		setPublisher(vmData.publisher);
+		setSku(vmData.sku);
+		setVersion(vmData.version);
+		setInfoOpen(true);
+	}
+	
+	const closeInfoOpen = () => {
+		setName("");
+		setOffer("");
+		setPublisher("");
+		setSku("");
+		setVersion("");
+		setInfoOpen(false);
+	}
+	
+	const openCreateOpen = (vm) => {
+		var vmData = vm;
+		setName(vmData.name);
+		setCreateOpen(true);
+	}
+	
+	const closeCreateOpen = () => {
+		setGroup("");
+		setEmailList([]);
+		setEmail("");
+		setCreateOpen(false);
+	}
+	
+	const handleChange = (e) => {
+		if(e.target.name === 'group') {
+			setEmailList([]);
+			setGroup(e.target.value)
+			var all = users;
+			var n = 0;
+			var list = new Array();
+			for(var i = 0; i < all.length; i++){		
+				if(all[i].group === e.target.value) {
+					list[n] = all[i].email;
+					n = n + 1;
+				}
+			}
+			setEmailList(list);
+		}
+		if(e.target.name === 'email') {
+			setEmail(e.target.value)
+		}
+	}
 	
     return (
       <div>
@@ -111,6 +186,106 @@ export default function VMs({match}) {
         <Typography variant="h5" gutterBottom>
           &nbsp;&nbsp;&nbsp;생성 가능한 VM
         </Typography> <br/>
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={infoOpen}
+        onClose={closeInfoOpen}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={infoOpen}>
+            <div className={classes.modal_paper}>
+              <img src={"/img/"+name+".jpg"} className={classes.img}/>
+              <h2 id="transition-modal-title">{name}</h2>
+              <div style={{display:"flex"}}>
+                <Typography gutterBottom variant="subtitle1">
+                  offer: &nbsp;
+                </Typography>
+                <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                  {offer}
+                </Typography>
+              </div>
+              <div style={{display:"flex"}}>
+                <Typography gutterBottom variant="subtitle1">
+                  publisher: &nbsp;
+                </Typography>
+                <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                  {publisher}
+                </Typography>
+              </div>
+              <div style={{display:"flex"}}>
+                <Typography gutterBottom variant="subtitle1">
+                  sku: &nbsp;
+                </Typography>
+                <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                  {sku}
+                </Typography>
+              </div>
+              <div style={{display:"flex"}}>
+                <Typography gutterBottom variant="subtitle1">
+                  version: &nbsp;
+                </Typography>
+                <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                  {version}
+                </Typography>
+              </div>
+            </div>
+          </Fade>
+        </Modal> 
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={createOpen}
+        onClose={closeCreateOpen}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={createOpen}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">{name} 을 할당할 사용자</h2><br/>
+              그룹: <br/><FormControl className={classes.formControl}>
+  			         <Select
+  			          id="group"
+  			          name="group"
+  			          onChange={handleChange}
+  			          label="Group"
+  			          fullWidth
+  			          defaultValue={groupList[0]}
+  			          value={group}
+  			         >
+  			           {groupList.map((name) => (
+  			    	      <MenuItem key={name} value={name}>{name}</MenuItem> 
+  			           ))}
+  			         </Select>
+  			       </FormControl><br /><br/>
+  			  이메일: <br/> <FormControl className={classes.formControl}>
+			         <Select
+			          id="email"
+			          name="email"
+			          onChange={handleChange}
+			          label="Email"
+			          fullWidth
+			          value={email}
+			         >
+			           {emailList.map((email) => (
+			    	      <MenuItem key={email} value={email}>{email}</MenuItem> 
+			           ))}
+			         </Select>
+			       </FormControl><br /><br />
+			       <Button variant="contained" color="primary">할당</Button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			       <Button variant="contained" color="secondary" onClick={closeCreateOpen}>취소</Button>
+            </div>
+          </Fade>
+        </Modal>
         <Paper className={classes.paper}>
           <List className={classes.root}>
             {vmOption.map((vm) => {
@@ -123,7 +298,9 @@ export default function VMs({match}) {
                   <ListItemText id={vm.id} primary={vm.name} secondary={vm.publisher}/> 
                   <Divider />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="comments">
+                  <Button variant="contained" color="primary" onClick={()=>openCreateOpen(vm)}>생성</Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <IconButton edge="end" aria-label="comments" onClick={()=>openInfoOpen(vm)}>
                       <SearchIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
