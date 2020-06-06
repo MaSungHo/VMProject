@@ -66,6 +66,12 @@ const useStyles = makeStyles((theme) => ({
 	width: theme.spacing(8),
 	height: theme.spacing(8),
   },
+  button: {
+	  marginLeft: '23%',
+  },
+  center_button: {
+	  marginLeft: '37%',
+  },
 }));
 
 export default function VMs({match}) {
@@ -74,6 +80,9 @@ export default function VMs({match}) {
 	const [vmOption, setVmOption] = useState([]);
 	const [infoOpen, setInfoOpen] = useState(false);
 	const [createOpen, setCreateOpen] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [complete, setComplete] = useState(false);
+	const [fail, setFail] = useState(false);
 	
 	const [name, setName] = useState("");
 	const [offer, setOffer] = useState("");
@@ -86,6 +95,7 @@ export default function VMs({match}) {
 	const [emailList, setEmailList] = useState([]);
 	const [group, setGroup] = useState("");
 	const [email, setEmail] = useState("");
+	const [num, setNum] = useState(0);
 	
 	useEffect(() => {
 	  let unmounted = false;
@@ -155,6 +165,7 @@ export default function VMs({match}) {
 		setGroup("");
 		setEmailList([]);
 		setEmail("");
+		setNum(0);
 		setCreateOpen(false);
 	}
 	
@@ -175,7 +186,57 @@ export default function VMs({match}) {
 		}
 		if(e.target.name === 'email') {
 			setEmail(e.target.value)
+			axios.get('http://localhost:8090/users/' + e.target.value + '/')
+			  .then(res => {
+				  setNum(res.data.num_VM);
+			  });
 		}
+	}
+	
+	const handleCreate = () => {
+		openLoading();
+		var vmName = email.split("@");
+		axios.post('http://localhost:8090/VMs/new', {
+			email: email,
+			osName: name,
+			vmName: vmName[0] + "_VM_" + num
+		})
+		.then(res => {
+			if(res.status === 200) {
+				closeLoading();
+				closeCreateOpen();
+				openComplete();
+			}
+			else {
+				closeLoading();
+				closeCreateOpen();
+				openFail();
+			}
+		})
+	}
+	
+	const openLoading = () => {
+		setLoading(true);
+	}
+	
+	const closeLoading = () => {
+		setLoading(false);
+	}
+	
+	const openComplete = () => {
+		setComplete(true);
+	}
+	
+	const closeComplete = () => {
+		setComplete(false);
+	}
+	
+	const openFail = () => {
+		setFail(true);
+	}
+	
+	const closeFail = () => {
+		setFail(false);
 	}
 	
     return (
@@ -186,6 +247,7 @@ export default function VMs({match}) {
         <Typography variant="h5" gutterBottom>
           &nbsp;&nbsp;&nbsp;생성 가능한 VM
         </Typography> <br/>
+        
         <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -237,6 +299,7 @@ export default function VMs({match}) {
             </div>
           </Fade>
         </Modal> 
+        
         <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -281,11 +344,75 @@ export default function VMs({match}) {
 			           ))}
 			         </Select>
 			       </FormControl><br /><br />
-			       <Button variant="contained" color="primary">할당</Button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			       <Button variant="contained" color="primary" className={classes.button} onClick={handleCreate}>할당</Button>
+			       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			       <Button variant="contained" color="secondary" onClick={closeCreateOpen}>취소</Button>
             </div>
           </Fade>
         </Modal>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={loading}
+        onClose={closeLoading}
+        closeAfterTransition
+        disableBackdropClick
+        disableEscapeKeyDown
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={loading}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">VM을 생성 중입니다...</h2><br/>
+              <Typography gutterBottom variant="subtitle1">몇 분의 시간이 소요될 수 있습니다</Typography>
+            </div>
+          </Fade>
+        </Modal>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={complete}
+        onClose={closeComplete}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={complete}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">VM을 성공적으로 생성했습니다.</h2><br/>
+              <Button variant="contained" color="primary" onClick={closeComplete} className={classes.center_button}>확인</Button>
+            </div>
+          </Fade>
+        </Modal>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={fail}
+        onClose={closeFail}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={fail}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">VM 생성 중 오류가 발생했습니다.</h2><br/>
+              <Button variant="contained" color="primary" onClick={closeFail} className={classes.center_button}>확인</Button>
+            </div>
+          </Fade>
+        </Modal>
+        
         <Paper className={classes.paper}>
           <List className={classes.root}>
             {vmOption.map((vm) => {
