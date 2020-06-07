@@ -96,6 +96,7 @@ export default function VMs({ history, match }) {
 	const [loading, setLoading] = useState(false);
 	const [complete, setComplete] = useState(false);
 	const [fail, setFail] = useState(false);
+	const [erase, setErase] = useState(false);
 	
 	const [name, setName] = useState("");
 	const [osType, setOsType] = useState("");
@@ -105,6 +106,7 @@ export default function VMs({ history, match }) {
 	
 	const [osList, setOsList] = useState([]);
 	const [num, setNum] = useState(0);
+	const [action, setAction] = useState("");
 
 	useEffect(() => {
 	  let unmounted = false;
@@ -163,6 +165,7 @@ export default function VMs({ history, match }) {
 		  .then(res => {
 			  setNum(res.data.num_VM);
 			  setCreateOpen(true);
+			  setAction("생성");
 		  });
 	}
 	
@@ -218,6 +221,7 @@ export default function VMs({ history, match }) {
 	
 	const closeComplete = () => {
 		setComplete(false);
+		setAction("");
 	}
 	
 	const openFail = () => {
@@ -226,6 +230,43 @@ export default function VMs({ history, match }) {
 	
 	const closeFail = () => {
 		setFail(false);
+		setAction("");
+	}
+	
+	const openErase = (vm) => {
+		var vmData = vm;
+		setName(vmData.vmName);
+		setResourceGroup(vmData.resourceGroupName);
+		setAction("삭제");
+		setErase(true);
+	}
+	
+	const closeErase = () => {
+		setName("");
+		setResourceGroup("");
+		setErase(false);
+	}
+	
+	const handleErase = () => {
+		openLoading();
+		axios.delete('http://localhost:8090/existing/delete/' + resourceGroup + '/' + name)
+		  .then(res => {
+		     if(res.status === 204) {
+			   closeLoading();
+			   closeErase();
+			   openComplete();
+			   axios.get('http://localhost:8090/existing/' + match.params.email + '/admin')
+			     .then(response => {
+				    setVms(response.data);
+				 })
+			 }
+			 else {
+			   closeLoading();
+			   closeErase();
+			   openFail();
+			 }
+			  
+		  })
 	}
 	
     return (
@@ -330,6 +371,28 @@ export default function VMs({ history, match }) {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
+        open={erase}
+        onClose={closeErase}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={erase}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">{resourceGroup} 그룹의 가상머신 {name}을 삭제하시겠습니까?</h2><br/>
+			  <Button variant="contained" color="secondary" onClick={handleErase} className={classes.center_button}>삭제</Button>
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <Button variant="contained" color="primary" onClick={closeErase}>취소</Button>
+            </div>
+          </Fade>
+        </Modal>
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
         open={loading}
         onClose={closeLoading}
         closeAfterTransition
@@ -342,7 +405,7 @@ export default function VMs({ history, match }) {
         >
           <Fade in={loading}>
             <div className={classes.modal_paper}>
-              <h2 id="transition-modal-title">VM을 생성 중입니다...</h2><br/>
+              <h2 id="transition-modal-title">VM을 {action} 중입니다...</h2><br/>
               <Typography gutterBottom variant="subtitle1">몇 분의 시간이 소요될 수 있습니다</Typography>
             </div>
           </Fade>
@@ -362,7 +425,7 @@ export default function VMs({ history, match }) {
         >
           <Fade in={complete}>
             <div className={classes.modal_paper}>
-              <h2 id="transition-modal-title">VM을 성공적으로 생성했습니다.</h2><br/>
+              <h2 id="transition-modal-title">VM을 성공적으로 {action}했습니다.</h2><br/>
               <Button variant="contained" color="primary" onClick={closeComplete} className={classes.center_button}>확인</Button>
             </div>
           </Fade>
@@ -382,7 +445,8 @@ export default function VMs({ history, match }) {
         >
           <Fade in={fail}>
             <div className={classes.modal_paper}>
-              <h2 id="transition-modal-title">VM 생성 중 오류가 발생했습니다.</h2><br/>
+              <h2 id="transition-modal-title">요청한 작업 수행 중 오류가 발생했습니다.</h2><br/>
+              &nbsp;&nbsp;&nbsp;
               <Button variant="contained" color="primary" onClick={closeFail} className={classes.center_button}>확인</Button>
             </div>
           </Fade>
@@ -401,7 +465,7 @@ export default function VMs({ history, match }) {
                     <ListItemText id={vm.id} primary={vm.vmName} secondary={vm.osType}/> 
                     <Divider />
                     <ListItemSecondaryAction>
-                      <Button variant="contained" color="secondary" onClick={()=>openCreateOpen(vm)}>VM 삭제</Button>
+                      <Button variant="contained" color="secondary" onClick={()=>openErase(vm)}>VM 삭제</Button>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <IconButton edge="end" aria-label="comments" onClick={()=>openInfoOpen(vm)}>
                         <SearchIcon />
