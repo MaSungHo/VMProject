@@ -197,6 +197,7 @@ public class VMService {
             existingVM.setPublicIPAddress(vm.getPrimaryPublicIPAddress().ipAddress());
             existingVM.setSize("Standard_B1ls");
             existingVM.setOsType(vmInfo.getOsName());
+            existingVM.setStatus("running");
             existingVMRepository.save(existingVM);
         	return new ResponseEntity<HttpStatus>(HttpStatus.OK);
         } catch (Exception e) {

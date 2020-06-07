@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   submit_mleft: {
 	margin: theme.spacing(3, 0, 2),
-	marginLeft: '10%',
+	marginLeft: '20%',
 	marginRight: '2.5%'
   },
   submit_mright: {
@@ -103,11 +103,23 @@ export default function Groups() {
 		  name: name,
 		  num_people: 0
 		})
+		.then(res => {
+			axios.get('http://localhost:8090/groups')
+			  .then(response => {
+				  setGroups(response.data);
+			  })
+		});
 		setOpen(false);
 	}
 	
 	const handleDelete = () => {
-		axios.delete("http://localhost:8090/groups/" + name);
+		axios.delete("http://localhost:8090/groups/" + name)
+		.then(res => {
+			axios.get('http://localhost:8090/groups')
+			  .then(response => {
+				  setGroups(response.data);
+			  })
+		});
 		setDel(false);
 	}
 	
@@ -195,7 +207,7 @@ export default function Groups() {
         >
            <Fade in={del}>
              <div className={classes.modal_paper}>
-               <br/><br/><Typography variant="body2">그룹을 삭제하시겠습니까?</Typography> <br/>
+               <br/><br/><h2 id="transition-modal-title">그룹을 삭제하시겠습니까?</h2> <br/>
                <Button
                 onClick={handleDelete}
                 variant="contained"

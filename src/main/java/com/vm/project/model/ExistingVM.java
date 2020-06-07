@@ -16,7 +16,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 	"adminPassword",
 	"publicIPAddress",
 	"size",
-	"osType"
+	"osType",
+	"status"
 })
 
 @Document(collection = "ExistingVM")
@@ -49,12 +50,15 @@ public class ExistingVM {
 	@JsonProperty("osType")
 	private String osType;
 		
+	@JsonProperty("status")
+	private String status;
+	
 	public ExistingVM() {
 		
 	}
 
 	public ExistingVM(String id, String userEmail, String resourceGroupName, String vmName,
-			String adminName, String adminPassword, String publicIPAddress, String size, String osType) {
+			String adminName, String adminPassword, String publicIPAddress, String size, String osType, String status) {
 		this.id = id;
 		this.userEmail = userEmail;
 		this.resourceGroupName = resourceGroupName;
@@ -64,6 +68,7 @@ public class ExistingVM {
 		this.publicIPAddress = publicIPAddress;
 		this.size = size;
 		this.osType = osType;
+		this.status = status;
 	}
 
 	public String getId() {
@@ -136,6 +141,14 @@ public class ExistingVM {
 
 	public void setOsType(String osType) {
 		this.osType = osType;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }

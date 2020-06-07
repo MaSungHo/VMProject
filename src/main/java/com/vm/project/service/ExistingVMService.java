@@ -95,6 +95,10 @@ public class ExistingVMService {
                 .withDefaultSubscription();
         	VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
         	vm.powerOff();
+        	ExistingVM existingVM = existingVMRepository.findByVmName(vmName);
+        	existingVM.setStatus("stopped");
+        	existingVMRepository.save(existingVM);
+        	
         	return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
             e.printStackTrace();
@@ -111,6 +115,11 @@ public class ExistingVMService {
                 .withDefaultSubscription();
         	VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
         	vm.start();
+        	
+        	ExistingVM existingVM = existingVMRepository.findByVmName(vmName);
+        	existingVM.setStatus("running");
+        	existingVMRepository.save(existingVM);
+        	
         	return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
             e.printStackTrace();

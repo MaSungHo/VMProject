@@ -97,6 +97,8 @@ export default function VMs({ history, match }) {
 	const [complete, setComplete] = useState(false);
 	const [fail, setFail] = useState(false);
 	const [erase, setErase] = useState(false);
+	const [running, setRunning] = useState(false);
+	const [stopped, setStopped] = useState(false);
 	
 	const [name, setName] = useState("");
 	const [osType, setOsType] = useState("");
@@ -207,32 +209,6 @@ export default function VMs({ history, match }) {
 		})
 	}
 	
-	const openLoading = () => {
-		setLoading(true);
-	}
-	
-	const closeLoading = () => {
-		setLoading(false);
-	}
-	
-	const openComplete = () => {
-		setComplete(true);
-	}
-	
-	const closeComplete = () => {
-		setComplete(false);
-		setAction("");
-	}
-	
-	const openFail = () => {
-		setFail(true);
-	}
-	
-	const closeFail = () => {
-		setFail(false);
-		setAction("");
-	}
-	
 	const openErase = (vm) => {
 		var vmData = vm;
 		setName(vmData.vmName);
@@ -265,8 +241,99 @@ export default function VMs({ history, match }) {
 			   closeErase();
 			   openFail();
 			 }
-			  
 		  })
+	}
+	
+	const openRunning = (vm) => {
+		var vmData = vm;
+		setName(vmData.vmName);
+		setResourceGroup(vmData.resourceGroupName);
+		setAction("실행");
+		setRunning(true);
+	}
+	
+	const closeRunning = () => {
+		setRunning(false);
+	}
+	
+	const handleRunning = () => {
+		openLoading();
+		axios.put('http://localhost:8090/existing/start/' + resourceGroup + '/' + name)
+		  .then(res => {
+			  if(res.status === 200) {
+				   closeLoading();
+				   closeRunning();
+				   openComplete();
+				   axios.get('http://localhost:8090/existing/' + match.params.email + '/admin')
+				     .then(response => {
+					    setVms(response.data);
+					 })
+				 }
+				 else {
+				   closeLoading();
+				   closeRunning();
+				   openFail();
+				 }
+		  })
+	}
+	
+	const openStopped = (vm) => {
+		var vmData = vm;
+		setName(vmData.vmName);
+		setResourceGroup(vmData.resourceGroupName);
+		setAction("중지");
+		setStopped(true);
+	}
+	
+	const closeStopped = () => {
+		setStopped(false);
+	}
+	
+	const handleStopped = () => {
+		openLoading();
+		axios.put('http://localhost:8090/existing/stop/' + resourceGroup + '/' + name)
+		  .then(res => {
+			  if(res.status === 200) {
+				   closeLoading();
+				   closeStopped();
+				   openComplete();
+				   axios.get('http://localhost:8090/existing/' + match.params.email + '/admin')
+				     .then(response => {
+					    setVms(response.data);
+					 })
+				 }
+				 else {
+				   closeLoading();
+				   closeStopped();
+				   openFail();
+				 }
+		  })
+	}
+	
+	const openLoading = () => {
+		setLoading(true);
+	}
+	
+	const closeLoading = () => {
+		setLoading(false);
+	}
+	
+	const openComplete = () => {
+		setComplete(true);
+	}
+	
+	const closeComplete = () => {
+		setComplete(false);
+		setAction("");
+	}
+	
+	const openFail = () => {
+		setFail(true);
+	}
+	
+	const closeFail = () => {
+		setFail(false);
+		setAction("");
 	}
 	
     return (
@@ -452,8 +519,52 @@ export default function VMs({ history, match }) {
           </Fade>
         </Modal>
         
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={running}
+        onClose={closeRunning}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={running}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">{resourceGroup} 그룹의 가상머신 {name}을 실행하시겠습니까?</h2><br/>
+			  <Button variant="contained" color="secondary" onClick={handleRunning} className={classes.center_button}>실행</Button>
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <Button variant="contained" color="primary" onClick={closeRunning}>취소</Button>
+            </div>
+          </Fade>
+        </Modal>        
+        
+        <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={stopped}
+        onClose={closeStopped}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+        timeout: 500,
+        }}
+        >
+          <Fade in={stopped}>
+            <div className={classes.modal_paper}>
+              <h2 id="transition-modal-title">{resourceGroup} 그룹의 가상머신 {name}을 중지하시겠습니까?</h2><br/>
+			  <Button variant="contained" color="secondary" onClick={handleStopped} className={classes.center_button}>중지</Button>
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <Button variant="contained" color="primary" onClick={closeStopped}>취소</Button>
+            </div>
+          </Fade>
+        </Modal>
+        
         <Paper className={classes.paper}>
-          {vms.length === 0 ? (<h2 id="transition-modal-title">할당받은 VM이 없습니다.</h2>) :
+          {vms.length === 0 ? (<h2 id="transition-modal-title">할당 받은 VM이 없습니다.</h2>) :
             (<List className={classes.root}>
               {vms.map((vm) => {
                 return (
@@ -465,6 +576,10 @@ export default function VMs({ history, match }) {
                     <ListItemText id={vm.id} primary={vm.vmName} secondary={vm.osType}/> 
                     <Divider />
                     <ListItemSecondaryAction>
+                      {vm.status === "running" ?
+                         (<Button variant="contained" color="primary" onClick={()=>openStopped(vm)}>VM 중지</Button>) : 
+                         (<Button variant="contained" color="primary" onClick={()=>openRunning(vm)}>VM 실행</Button>) 
+                      } &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <Button variant="contained" color="secondary" onClick={()=>openErase(vm)}>VM 삭제</Button>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <IconButton edge="end" aria-label="comments" onClick={()=>openInfoOpen(vm)}>

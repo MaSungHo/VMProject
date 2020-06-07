@@ -155,7 +155,6 @@ export default function Users() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [group, setGroup] = useState('');
-  const [virt, setVirt] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(false);
@@ -182,7 +181,6 @@ export default function Users() {
 	setEmail('');
 	setPassword('');
 	setGroup('');
-	setVirt([]);
   }
   
   const handleView = () => {
@@ -202,10 +200,6 @@ export default function Users() {
 	else if(e.target.name === 'group') {
 		setGroup(e.target.value)
 	}
-	else if(e.target.name === 'VMs') {
-		var Vm_array = e.target.value.split(',');
-		setVirt(Vm_array)
-	} 
   }
   
   const handleCreate = () => {
@@ -214,7 +208,7 @@ export default function Users() {
 		email: email,
 		password: password,
 		group: group,
-		VMs: virt
+		num_VM: 0
 	  }) .then(res => {
 		  axios.get('http://localhost:8090/users')
 		  	.then(response => {
@@ -331,23 +325,12 @@ export default function Users() {
        			     ))}
        			   </Select>
        			 </FormControl><br />
-       VM: <TextField
-       		onChange={handleChange}
-            className="validate"
-            name="VMs"
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="vm"
-          	label="VM"
-           />    
           <Button
            onClick={handleCreate}
            variant="contained"
            color="secondary"
            className={classes.submit}
-       	   disabled={name === '' || email === '' || password === '' || group === '' || virt.length === 0}
+       	   disabled={name === '' || email === '' || password === '' || group === ''}
           >
             사용자 생성
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
