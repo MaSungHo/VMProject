@@ -25,7 +25,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import '../css/custom.css';
+
+import NotFound from '../container/NotFound';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,6 +100,7 @@ export default function VMs({ history, match }) {
 	const [erase, setErase] = useState(false);
 	const [running, setRunning] = useState(false);
 	const [stopped, setStopped] = useState(false);
+	const [found, setFound] = useState(false);
 	
 	const [name, setName] = useState("");
 	const [osType, setOsType] = useState("");
@@ -133,6 +135,16 @@ export default function VMs({ history, match }) {
 			}
 		  }
 		});
+	  axios.get('http://localhost:8090/users/' + match.params.email + '/')
+	    .then(res => {
+	      if (!unmounted) {
+		    setFound(true);
+			if (axios.isCancel()) {
+			  console.log(`request cancelled:${e.message}`);
+			} else {
+			}
+		  }
+	    });
 		return function () {
 		  unmounted = true;
 		  source.cancel("Cancelling in cleanup");
@@ -338,6 +350,9 @@ export default function VMs({ history, match }) {
 	
     return (
       <div>
+      {found === false ? (
+        <NotFound history={history} />) : (
+    	<div>
         <Helmet>
     	  <title>{match.params.email} - VMs</title>
         </Helmet> <br/>
@@ -595,6 +610,7 @@ export default function VMs({ history, match }) {
         <Button variant="contained" color="primary" onClick={goBack} className={classes.button}>이전 페이지로</Button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <Button variant="contained" color="primary" onClick={openCreateOpen} className={classes.button_back}>새로운 VM 할당</Button>
+        </div> )}
       </div>
   );
 }

@@ -61,11 +61,15 @@ public class UserService {
 	}
 	
 	public ResponseEntity<User> getUserByEmail(String email) {
-		User _user = userRepository.findByEmail(email);
-		if(_user != null) {
-			return new ResponseEntity<>(_user, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		try {
+			User _user = userRepository.findByEmail(email);
+			if(_user != null) {
+				return new ResponseEntity<>(_user, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			}
+		} catch(Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

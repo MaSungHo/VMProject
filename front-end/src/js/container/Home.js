@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import LoginForm from '../component/LoginForm';
 import { connect } from 'react-redux'; // Login 컨테이너와 리덕스를 연결해줌.
 import { getStatusRequest, loginRequest } from '../actions/Authentication'; 
-import '../css/custom.css';
+import RootPage from '../component/RootPage';
 
 class Home extends Component {
 	
@@ -41,7 +41,9 @@ class Home extends Component {
 		            </Helmet>
 			          <LoginForm mode={true} 
 			           onLogin={this.handleLogin}/>
-			      </div> ): ( <div> Hello </div> )
+			      </div> ): ( 
+			        <RootPage />
+			      )
 	            }
 			  </div>
 			

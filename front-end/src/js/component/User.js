@@ -20,7 +20,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import '../css/custom.css';
+
+import NotFound from '../container/NotFound';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -188,6 +189,8 @@ export default function User({match, history}) {
 
   return (
     <div className={classes.root}>
+      {name != '' ? (
+      <div>
       <Helmet>
         <title>VM Web User Info</title>
       </Helmet> <br/>
@@ -394,6 +397,8 @@ export default function User({match, history}) {
           </Grid>
         </Grid>
       </Paper>
+      </div> ): ( 
+    	<NotFound history={history} /> )}
     </div>
   );
 }

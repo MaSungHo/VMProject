@@ -21,6 +21,8 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import Typography from '@material-ui/core/Typography';
 
+import NotFound from '../container/NotFound';
+
 const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
@@ -51,9 +53,6 @@ function TablePaginationActions(props) {
 
   return (
     <div className={classes.root}>
-      <Helmet>
-        <title>VM Web Group Info</title>
-      </Helmet>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -98,11 +97,14 @@ const columns = [
 
 const useStyles2 = makeStyles({
   table: {
-    minWidth: 500,
+    maxWidth: 1370,
+	marginLeft: '5%',
+	marginRight: '5%',
+	alignItems: 'center',
   },
 });
 
-export default function Group({match}) {
+export default function Group({ match, history }) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -121,6 +123,10 @@ export default function Group({match}) {
     setPage(0);
   };
 
+  const goBack = () => {
+	history.goBack();
+  }
+  
   useEffect(() => {
 	let unmounted = false;
     let source = axios.CancelToken.source();
@@ -142,6 +148,13 @@ export default function Group({match}) {
   }, []);
   
   return (
+	<div>
+	{ length === 0 ? (
+	<NotFound history={history} /> ) : (
+    <div>
+    <Helmet>
+      <title>VM Web Group Info</title>
+    </Helmet>
     <TableContainer component={Paper}>
       <br />
       <Typography variant="h4">{match.params.name}의 사용자</Typography><br />
@@ -210,6 +223,8 @@ export default function Group({match}) {
           </TableRow>
         </TableFooter>
       </Table>
-    </TableContainer>
+    </TableContainer> 
+    </div> )}
+    </div>
   );
 }
