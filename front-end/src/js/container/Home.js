@@ -22,7 +22,7 @@ class Home extends Component {
 					
 					//로그인이 성공하면 브라우저 쿠키에 로그인 정보를 저장함.
 					document.cookie = 'key=' + btoa(JSON.stringify(loginData));
-					this.props.history.push('/users');
+					this.props.history.push('/user');
 					return true;
 				} else {
 					return false;	

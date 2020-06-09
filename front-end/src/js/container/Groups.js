@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   media: {
-    height: 250,
+    height: 300,
   },
   submit_left: {
 	margin: theme.spacing(3, 0, 2),
@@ -233,7 +233,7 @@ export default function Groups() {
 	  			<CardActionArea>
       				<CardMedia
       				className={classes.media}
-      				image="/img/Ajou-template.jpg"
+      				image="/img/group.png"
       				title={group.name}
       			    />
       				<CardContent>
@@ -250,7 +250,7 @@ export default function Groups() {
       				<Button size="small" color="primary">
       					수정
       				</Button>
-      				<Link to={"/groups/" + group.name}>
+      				<Link to={"/group/" + group.name}>
       				  <Button size="small" color="primary">
       					자세히 보기
       				  </Button>

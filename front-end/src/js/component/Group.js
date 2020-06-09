@@ -188,7 +188,7 @@ export default function Group({ match, history }) {
         		          );
         		       })}
         		       <TableCell>
-        		         <Link to={"/users/" + user.email}>
+        		         <Link to={"/user/" + user.email}>
         		           <Button variant="contained" color="primary"> 
         		              조회
         		           </Button>

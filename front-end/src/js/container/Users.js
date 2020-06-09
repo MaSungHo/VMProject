@@ -376,7 +376,7 @@ export default function Users() {
         		          );
         		       })}
         		       <TableCell align="center">
-        		         <Link to={"/users/" + user.email}>
+        		         <Link to={"/user/" + user.email}>
         		           <Button variant="contained" color="primary" className={classes.cell_button}> 
         		              조회
         		           </Button>

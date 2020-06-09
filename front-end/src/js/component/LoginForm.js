@@ -59,12 +59,14 @@ const styles = theme => ({
     backgroundPosition: 'center',
   },
   paper: {
+	height: 530,
     margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
   avatar: {
+	marginTop: '12%',
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },

@@ -218,8 +218,8 @@ export default function Appbar(props) {
         <List>
           {['사용자 관리', '그룹 관리', '가상 머신'].map((text, index) => (
         	<Link key={index} color = 'inherit' component={RouterLink} to=
-        		{index === 0 ? "/users" : (
-        				index === 1 ? "/groups" : "/VM") }>
+        		{index === 0 ? "/user" : (
+        				index === 1 ? "/group" : "/VM") }>
               <ListItem button key={index} onClick={event => {
             	handleDrawerClose();
                 }} >

@@ -37,8 +37,9 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 700
   },
   image: {
-    width: 300,
-    height: 300,
+	marginTop: '5%',
+    width: 400,
+    height: 400,
   },
   img: {
     margin: 'auto',
@@ -136,7 +137,7 @@ export default function User({match, history}) {
 		}) .then(res => {
 			axios.get('http://localhost:8090/users/' + email + '/')
 				.then(response => {
-					history.replace('/users/' + email);
+					history.replace('/user/' + email);
 					setUser(response.data);
 				})
 		})
@@ -350,12 +351,13 @@ export default function User({match, history}) {
         <Grid container spacing={10}>
           <Grid item>
             <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="complex" src="/img/User.png" />
+              <img className={classes.img} alt="complex" src="/img/user.jpg" />
             </ButtonBase>
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
+              <br /><br /><br />
                 <Typography gutterBottom variant="h3" color="textSecondary">
                   {user.email}
                 </Typography> <br />
@@ -371,23 +373,22 @@ export default function User({match, history}) {
                   그룹: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{user.group}
                 </Typography>
                 <Divider />
-                  <Typography variant="h6" gutterBottom>
-                    VM : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <Link to={"/VM/" + user.email}>
-                      {user.num_VM}개
-                    </Link>
-                  </Typography>
+                <Typography variant="h6" gutterBottom>
+                  VM : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <Link to={"/VM/" + user.email}>
+                    {user.num_VM}개
+                  </Link>
+                </Typography>
                 <Divider />
-              </Grid>
-              <Grid item>
+                <br /><br />
                 <Button variant="contained" color="primary" onClick={handleModalOpen}> 
                    정보 수정 
                 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
                 <Button variant="contained" color="primary" onClick={goBack}>
-                  뒤로 가기 
+                   뒤로 가기 
                 </Button>&nbsp;&nbsp;&nbsp;&nbsp;
                 <Button variant="contained" color="secondary" onClick={handleOpen}> 
-                    사용자 삭제
+                   사용자 삭제
                 </Button>
               </Grid>
             </Grid>

@@ -58,16 +58,16 @@ class App extends Component {
 						<Switch>
 							<Route exact path="/" component={Home} />
 							<RouteIf
-							 exact path="/users"
+							 exact path="/user"
 						     component={Users} />
 						    <RouteIf
-						     exact path="/users/:email" 
+						     exact path="/user/:email" 
 						     component={User} />   
 							<RouteIf
-							exact path="/groups" 
+							exact path="/group" 
 							component={Groups} />
 							<RouteIf
-						     path="/groups/:name" 
+						     path="/group/:name" 
 						     component={Group} />
 							<RouteIf
 						     exact path="/VM" 
