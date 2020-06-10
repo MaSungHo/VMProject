@@ -107,7 +107,13 @@ export default function VMs({ history, match }) {
 	const [resourceGroup, setResourceGroup] = useState("");
 	const [publicIP, setPublicIP] = useState("");
 	const [size, setSize] = useState("");
+	const [vmSize, setVmSize] = useState("");
+	const [condition, setCondition] = useState("");
 	
+	const [sizeList, setSizeList] = useState(["Standard_B1ls (1 vcpu, 0.5 GiB)",
+											  "Standard_B1s (1 vcpu, 1 GiB)",
+											  "Standard_DS1_v2 (1 vcpu, 3.5 GiB)",
+											  "Standard_D2s_v3 (2 vcpu, 8 GiB)"]);
 	const [osList, setOsList] = useState([]);
 	const [num, setNum] = useState(0);
 	const [action, setAction] = useState("");
@@ -162,6 +168,7 @@ export default function VMs({ history, match }) {
 		setResourceGroup(vmData.resourceGroupName);
 		setPublicIP(vmData.publicIPAddress);
 		setSize(vmData.size);
+		setCondition(vmData.status);
 		setInfoOpen(true);
 	}
 	
@@ -171,6 +178,7 @@ export default function VMs({ history, match }) {
 		setResourceGroup("");
 		setPublicIP("");
 		setSize("");
+		setCondition("");
 		setInfoOpen(false);
 	}
 	
@@ -186,12 +194,16 @@ export default function VMs({ history, match }) {
 	const closeCreateOpen = () => {
 		setOsType("");
 		setNum(0);
+		setVmSize("");
 		setCreateOpen(false);
 	}
 	
 	const handleChange = (e) => {
 		if(e.target.name === 'osType') {
 			setOsType(e.target.value);
+		}
+		else if(e.target.name === 'vmSize') {
+			setVmSize(e.target.value);
 		}
 	}
 	
@@ -201,7 +213,8 @@ export default function VMs({ history, match }) {
 		axios.post('http://localhost:8090/VMs/new', {
 			email: match.params.email,
 			osName: osType,
-			vmName: vmName[0] + "_VM_" + num
+			vmName: vmName[0] + "_VM_" + num,
+			vmSize: vmSize
 		})
 		.then(res => {
 			if(res.status === 200) {
@@ -270,7 +283,7 @@ export default function VMs({ history, match }) {
 	
 	const handleRunning = () => {
 		openLoading();
-		axios.put('http://localhost:8090/existing/start/' + resourceGroup + '/' + name)
+		axios.put('http://localhost:8090/existing/start/admin/' + resourceGroup + '/' + name)
 		  .then(res => {
 			  if(res.status === 200) {
 				   closeLoading();
@@ -303,7 +316,7 @@ export default function VMs({ history, match }) {
 	
 	const handleStopped = () => {
 		openLoading();
-		axios.put('http://localhost:8090/existing/stop/' + resourceGroup + '/' + name)
+		axios.put('http://localhost:8090/existing/stop/admin/' + resourceGroup + '/' + name)
 		  .then(res => {
 			  if(res.status === 200) {
 				   closeLoading();
@@ -408,6 +421,14 @@ export default function VMs({ history, match }) {
                   {size}
                 </Typography>
               </div>
+              <div style={{display:"flex"}}>
+                <Typography gutterBottom variant="subtitle1">
+                  status: &nbsp;
+                </Typography>
+                <Typography gutterBottom variant="subtitle1" color="textSecondary">
+                  {condition === "running" ? "실행 중" : "중지됨"}
+                </Typography>
+              </div>
             </div>
           </Fade>
         </Modal> 
@@ -442,7 +463,31 @@ export default function VMs({ history, match }) {
   			           ))}
   			         </Select>
 			       </FormControl><br /><br />
-			       <Button variant="contained" color="primary" onClick={handleCreate}>할당</Button>
+			       
+			  VM 사이즈: <br/><FormControl className={classes.formControl}>
+			         <Select
+			          id="vmSize"
+			          name="vmSize"
+			          onChange={handleChange}
+			          label="vmSize"
+			          fullWidth
+			          defaultValue={sizeList[0]}
+			          value={vmSize}
+			         >
+			           {sizeList.map((vmSize) => (
+			    	      <MenuItem key={vmSize} value={vmSize.split(" ")[0]}>{vmSize}</MenuItem> 
+			           ))}
+			         </Select>
+			       </FormControl><br /><br />
+			       
+			       <Button 
+			        variant="contained" 
+			        color="primary" 
+			        onClick={handleCreate}
+			        disabled={osType==="" || vmSize===""}
+			       >
+			         할당
+			       </Button>
 			       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			       <Button variant="contained" color="secondary" onClick={closeCreateOpen}>취소</Button>
             </div>

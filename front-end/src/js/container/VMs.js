@@ -96,6 +96,11 @@ export default function VMs({match}) {
 	const [group, setGroup] = useState("");
 	const [email, setEmail] = useState("");
 	const [num, setNum] = useState(0);
+	const [vmSize, setVmSize] = useState("");
+	const [sizeList, setSizeList] = useState(["Standard_B1ls (1 vcpu, 0.5 GiB)",
+		  "Standard_B1s (1 vcpu, 1 GiB)",
+		  "Standard_DS1_v2 (1 vcpu, 3.5 GiB)",
+		  "Standard_D2s_v3 (2 vcpu, 8 GiB)"]);
 	
 	useEffect(() => {
 	  let unmounted = false;
@@ -165,6 +170,7 @@ export default function VMs({match}) {
 		setGroup("");
 		setEmailList([]);
 		setEmail("");
+		setVmSize("");
 		setNum(0);
 		setCreateOpen(false);
 	}
@@ -172,6 +178,7 @@ export default function VMs({match}) {
 	const handleChange = (e) => {
 		if(e.target.name === 'group') {
 			setEmailList([]);
+			setEmail("");
 			setGroup(e.target.value)
 			var all = users;
 			var n = 0;
@@ -184,12 +191,15 @@ export default function VMs({match}) {
 			}
 			setEmailList(list);
 		}
-		if(e.target.name === 'email') {
+		else if(e.target.name === 'email') {
 			setEmail(e.target.value)
 			axios.get('http://localhost:8090/users/' + e.target.value + '/')
 			  .then(res => {
 				  setNum(res.data.num_VM);
 			  });
+		}
+		else if(e.target.name === 'vmSize') {
+			setVmSize(e.target.value)
 		}
 	}
 	
@@ -199,7 +209,8 @@ export default function VMs({match}) {
 		axios.post('http://localhost:8090/VMs/new', {
 			email: email,
 			osName: name,
-			vmName: vmName[0] + "_VM_" + num
+			vmName: vmName[0] + "_VM_" + num,
+			vmSize: vmSize
 		})
 		.then(res => {
 			if(res.status === 200) {
@@ -344,7 +355,30 @@ export default function VMs({match}) {
 			           ))}
 			         </Select>
 			       </FormControl><br /><br />
-			       <Button variant="contained" color="primary" className={classes.button} onClick={handleCreate}>할당</Button>
+			  VM 사이즈: <br/> <FormControl className={classes.formControl}>
+			         <Select
+			          id="vmSize"
+			          name="vmSize"
+			          onChange={handleChange}
+			          label="vmSize"
+			          fullWidth
+			          value={vmSize}
+			         >
+			           {sizeList.map((vmSize) => (
+			    	      <MenuItem key={vmSize} value={vmSize.split(" ")[0]}>{vmSize}</MenuItem> 
+			           ))}
+			         </Select>
+			       </FormControl><br /><br />      
+			       
+			       <Button 
+			        variant="contained" 
+			        color="primary" 
+			        className={classes.button} 
+			        onClick={handleCreate}
+			        disabled={email==="" || vmSize===""}
+			       >
+			         할당
+			       </Button>
 			       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			       <Button variant="contained" color="secondary" onClick={closeCreateOpen}>취소</Button>
             </div>

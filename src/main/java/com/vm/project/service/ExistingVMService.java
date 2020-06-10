@@ -86,7 +86,7 @@ public class ExistingVMService {
 		}
 	}
 	
-	public ResponseEntity<HttpStatus> stopVM(String resourceGroup, String vmName) {
+	public ResponseEntity<HttpStatus> adminStopVM(String resourceGroup, String vmName) {
 		try {
 			final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
         	Azure azure = Azure.configure()
@@ -106,7 +106,7 @@ public class ExistingVMService {
         } 
 	}
 	
-	public ResponseEntity<HttpStatus> startVM(String resourceGroup, String vmName) {
+	public ResponseEntity<HttpStatus> adminStartVM(String resourceGroup, String vmName) {
 		try {
 			final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
         	Azure azure = Azure.configure()
@@ -127,6 +127,57 @@ public class ExistingVMService {
         }
 	}
 
+	public ResponseEntity<HttpStatus> userStopVM(String resourceGroup, String vmName, String token) {
+		if(jwtService.isUsable(token)) {
+			try {
+				final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
+				Azure azure = Azure.configure()
+					.withLogLevel(LogLevel.BASIC)
+					.authenticate(credFile)
+					.withDefaultSubscription();
+				VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
+				vm.powerOff();
+				ExistingVM existingVM = existingVMRepository.findByVmName(vmName);
+				existingVM.setStatus("stopped");
+				existingVMRepository.save(existingVM);
+        	
+				return new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED); 
+		}
+	}
+	
+	public ResponseEntity<HttpStatus> userStartVM(String resourceGroup, String vmName, String token) {
+		if(jwtService.isUsable(token)) {
+			try {
+				final File credFile = new File("C:\\Users\\tonem\\azureauth.properties");
+				Azure azure = Azure.configure()
+					.withLogLevel(LogLevel.BASIC)
+					.authenticate(credFile)
+					.withDefaultSubscription();
+				VirtualMachine vm = azure.virtualMachines().getByResourceGroup(resourceGroup, vmName);
+				vm.start();
+        	
+				ExistingVM existingVM = existingVMRepository.findByVmName(vmName);
+				existingVM.setStatus("running");
+				existingVMRepository.save(existingVM);
+				
+				return new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED); 
+		}
+	}
+	
 	public ResponseEntity<HttpStatus> deleteVM(String resourceGroup, String vmName) {
 		try {
 			ExistingVM existingVM = existingVMRepository.findByVmName(vmName);

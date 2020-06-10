@@ -65,24 +65,44 @@ public class ExistingVMController {
 		return existingVMService.getVMListByEmail(email);
 	}
 	
-	@ApiOperation(value = "VM를 중지")
+	@ApiOperation(value = "VM를 중지 - 관리자용")
 		@ApiImplicitParams({
 			@ApiImplicitParam(name = "resourceGroup", value = "중지할 VM이 속한 resourceGroup의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 			@ApiImplicitParam(name = "vmName", value = "중지할 VM의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 		})
-	@PutMapping("/existing/stop/{resourceGroup}/{vmName}")
-	public ResponseEntity<HttpStatus> stopVM(@PathVariable String resourceGroup, @PathVariable String vmName) {
-		return existingVMService.stopVM(resourceGroup, vmName);
+	@PutMapping("/existing/stop/admin/{resourceGroup}/{vmName}")
+	public ResponseEntity<HttpStatus> adminStopVM(@PathVariable String resourceGroup, @PathVariable String vmName) {
+		return existingVMService.adminStopVM(resourceGroup, vmName);
 	}
 	
-	@ApiOperation(value = "VM를 시작")
+	@ApiOperation(value = "VM를 시작 - 관리자용")
 		@ApiImplicitParams({
 			@ApiImplicitParam(name = "resourceGroup", value = "시작할 VM이 속한 resourceGroup의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 			@ApiImplicitParam(name = "vmName", value = "시작할 VM의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
 		})
-	@PutMapping("/existing/start/{resourceGroup}/{vmName}")
-	public ResponseEntity<HttpStatus> startVM(@PathVariable String resourceGroup, @PathVariable String vmName) {
-		return existingVMService.startVM(resourceGroup, vmName);
+	@PutMapping("/existing/start/admin/{resourceGroup}/{vmName}")
+	public ResponseEntity<HttpStatus> adminStartVM(@PathVariable String resourceGroup, @PathVariable String vmName) {
+		return existingVMService.adminStartVM(resourceGroup, vmName);
+	}
+	
+	@ApiOperation(value = "VM를 중지 - 사용자용")
+		@ApiImplicitParams({
+			@ApiImplicitParam(name = "resourceGroup", value = "중지할 VM이 속한 resourceGroup의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+			@ApiImplicitParam(name = "vmName", value = "중지할 VM의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+		})
+	@PutMapping("/existing/stop/user/{resourceGroup}/{vmName}")
+	public ResponseEntity<HttpStatus> userStopVM(@PathVariable String resourceGroup, @PathVariable String vmName, String token) {
+		return existingVMService.userStopVM(resourceGroup, vmName, token);
+	}
+	
+	@ApiOperation(value = "VM를 시작 - 사용자용")
+		@ApiImplicitParams({
+			@ApiImplicitParam(name = "resourceGroup", value = "시작할 VM이 속한 resourceGroup의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+			@ApiImplicitParam(name = "vmName", value = "시작할 VM의 이름", required = true, dataType = "string", paramType = "path", defaultValue = ""),
+		})
+	@PutMapping("/existing/start/user/{resourceGroup}/{vmName}")
+	public ResponseEntity<HttpStatus> userStartVM(@PathVariable String resourceGroup, @PathVariable String vmName, String token) {
+		return existingVMService.userStartVM(resourceGroup, vmName, token);
 	}
 	
 	@ApiOperation(value = "VM을 삭제함")

@@ -93,9 +93,6 @@ public class VMService {
 		String[] resourceName = vmInfo.getEmail().split("@");
 		String adminName = "admin_" + resourceName[0];
 		String adminPassword = "Password_" + resourceName[0] + "_00!@";
-		System.out.println(resourceName[0]);
-		System.out.println(adminName);
-		System.out.println(adminPassword);
 		
 		VM _vm = vmRepository.findByName(vmInfo.getOsName());
 		offer = _vm.getOffer();
@@ -138,7 +135,7 @@ public class VMService {
             	    .withAdminPassword(adminPassword) /////////////////////////////////////
             	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
             	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
-            	    .withSize("Standard_B1ls")
+            	    .withSize(vmInfo.getVmSize())
             	    .create();
             }
             else if(vmInfo.getOsName().equals("Ubuntu 20.04 LTS")) {
@@ -159,7 +156,7 @@ public class VMService {
                 	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
                 	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
                 	    .withPlan(plan)
-                	    .withSize("Standard_B1ls")
+                	    .withSize(vmInfo.getVmSize())
                 	    .create();
             }
             else {
@@ -179,7 +176,7 @@ public class VMService {
                 	    .withRootPassword(adminPassword) /////////////////////////////////////
                 	    .withComputerName(SdkContext.randomResourceName("com", 15)) /////////////////////////////////////
                 	    .withNewAvailabilitySet(SdkContext.randomResourceName("avail", 12)) /////////////////////////////////////
-                	    .withSize("Standard_B1ls")
+                	    .withSize(vmInfo.getVmSize())
                 	    .create();
             }
             
@@ -195,7 +192,7 @@ public class VMService {
             existingVM.setAdminName(adminName);
             existingVM.setAdminPassword(adminPassword);
             existingVM.setPublicIPAddress(vm.getPrimaryPublicIPAddress().ipAddress());
-            existingVM.setSize("Standard_B1ls");
+            existingVM.setSize(vmInfo.getVmSize());
             existingVM.setOsType(vmInfo.getOsName());
             existingVM.setStatus("running");
             existingVMRepository.save(existingVM);

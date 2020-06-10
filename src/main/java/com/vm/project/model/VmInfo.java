@@ -7,15 +7,18 @@ public class VmInfo {
 	private String email;
 	
 	private String vmName;
+	
+	private String vmSize;
 
 	public VmInfo() {
 		
 	}
 
-	public VmInfo(String osName, String email, String vmName) {
+	public VmInfo(String osName, String email, String vmName, String vmSize) {
 		this.osName = osName;
 		this.email = email;
 		this.vmName = vmName;
+		this.vmSize = vmSize;
 	}
 
 	public String getOsName() {
@@ -40,6 +43,14 @@ public class VmInfo {
 
 	public void setVmName(String vmName) {
 		this.vmName = vmName;
+	}
+	
+	public String getVmSize() {
+		return vmSize;
+	}
+
+	public void setVmSize(String vmSize) {
+		this.vmSize = vmSize;
 	}
 	
 }
