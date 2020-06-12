@@ -80,6 +80,7 @@ export default function User({match, history}) {
 	const [password, setPassword] = useState('');
 	const [group, setGroup] = useState('');
 	const [groupList, setGroupList] = useState([]);
+	const [found, setFound] = useState(false);
 	
 	// 사용자 삭제에 대한 함수------------------------------------------------------------------
 	const handleOpen = () => {
@@ -160,12 +161,13 @@ export default function User({match, history}) {
 	  axios.get('http://localhost:8090/users/' + match.params.email + '/')
 	    .then(res => {
 		  if (!unmounted) {
-		    setUser(res.data);
+			setFound(true);
+			setUser(res.data);
 		    setName(res.data.name);
 		    setEmail(res.data.email);
 		    setPassword(res.data.password);
 		    setGroup(res.data.group);
-		    setNum_VM(res.data.num_VM)
+		    setNum_VM(res.data.num_VM);
 			if (axios.isCancel()) {
 			  console.log(`request cancelled:${e.message}`);
 			} else {
@@ -190,7 +192,7 @@ export default function User({match, history}) {
 
   return (
     <div className={classes.root}>
-      {name != '' ? (
+      {found === true ? (
       <div>
       <Helmet>
         <title>VM Web User Info</title>

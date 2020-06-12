@@ -247,9 +247,6 @@ export default function Groups() {
       				</CardContent>
       			</CardActionArea>
       			<CardActions>
-      				<Button size="small" color="primary">
-      					수정
-      				</Button>
       				<Link to={"/group/" + group.name}>
       				  <Button size="small" color="primary">
       					자세히 보기
