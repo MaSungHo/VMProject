@@ -11,6 +11,6 @@
  2) MongoDB
 
 <h3>VM 생성 / 중지 / 삭제</h3>
- - Microsoft Azure Java SDK
- - Spring Boot port: 8090
- - Webpack-dev-server port: 9000
+ - Microsoft Azure Java SDK <br>
+ - Spring Boot port: 8090 <br>
+ - Webpack-dev-server port: 9000 <br>
