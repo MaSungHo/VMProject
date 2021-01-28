@@ -12,6 +12,5 @@
 
 <h3>VM 생성 / 중지 / 삭제</h3>
  - Microsoft Azure Java SDK
-
-Spring Boot port: 8090
-Webpack-dev-server port: 9000
+ - Spring Boot port: 8090
+ - Webpack-dev-server port: 9000
