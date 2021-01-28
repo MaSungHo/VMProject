@@ -1,14 +1,14 @@
 <h1>VM Web Admin Project</h1>
 
 <h3>Front-End</h3>
- 1) React.js
- 2) Node Package Manager (npm)
- 3) Webpack
- 4) Babel
+ 1) React.js <br>
+ 2) Node Package Manager (npm) <br>
+ 3) Webpack <br>
+ 4) Babel <br>
 
 <h3>Back-End</h3>
- 1) Spring Boot
- 2) MongoDB
+ 1) Spring Boot <br>
+ 2) MongoDB <br>
 
 <h3>VM 생성 / 중지 / 삭제</h3>
  - Microsoft Azure Java SDK <br>
